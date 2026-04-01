@@ -1,0 +1,16 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Local / editor
+.cursor/
+
+# Scratch / temp
+tmpclaude-*
+
+# Reference PDFs (large; avoid publishing third-party books)
+*.pdf

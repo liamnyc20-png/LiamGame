@@ -1,0 +1,78 @@
+    if time.time() - papa_stunned > 4.0:
+        if keyboard.f and keyboard.t:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.x += 3.5
+                papa.y += 3.5
+            else:
+                papa.x -= 3.5
+                papa.y -= 3.5
+            papa_faces = 1
+        elif keyboard.f and keyboard.g:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.x += 3.5
+                papa.y -= 3.5
+            else:
+                papa.x -= 3.5
+                papa.y += 3.5
+            papa_faces = 7
+        elif keyboard.h and keyboard.t:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.x -= 3.5
+                papa.y += 3.5
+            else:
+                papa.x += 3.5
+                papa.y -= 3.5
+            papa_faces = 3
+        elif keyboard.h and keyboard.g:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.x -= 3.5
+                papa.y -= 3.5
+            else:
+                papa.x += 3.5
+                papa.y += 3.5
+            papa_faces = 5
+        elif keyboard.f:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.x += 5
+            else:
+                papa.x -= 5
+            papa_faces = 8
+        elif keyboard.h:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.x -= 5
+            else:
+                papa.x += 5
+            papa_faces = 4
+        elif keyboard.t:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.y += 5
+            else:
+                papa.y -= 5
+            papa_faces = 2
+        elif keyboard.g:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+            if papa_confused == True:
+                papa.y -= 5
+            else:
+                papa.y += 5
+            papa_faces = 6
+        else:
+            papa = Actor("papamaybe")
+            papa.pos = papa_position
+
+        papa_position = (papa.x, papa.y)

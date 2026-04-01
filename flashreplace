@@ -1,0 +1,78 @@
+    if time.time() - flash_stunned > 4.0:
+        if keyboard.j and keyboard.i:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.x += 4
+                flash.y += 4
+            else:
+                flash.x -= 4
+                flash.y -= 4
+            flash_faces = 1
+        elif keyboard.j and keyboard.k:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.x += 4
+                flash.y -= 4
+            else:
+                flash.x -= 4
+                flash.y += 4
+            flash_faces = 7
+        elif keyboard.l and keyboard.i:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.x -= 4
+                flash.y += 4
+            else:
+                flash.x += 4
+                flash.y -= 4
+            flash_faces = 3
+        elif keyboard.l and keyboard.k:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.x -= 4
+                flash.y -= 4
+            else:
+                flash.x += 4
+                flash.y += 4
+            flash_faces = 5
+        elif keyboard.j:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.x += 5.5
+            else:
+                flash.x -= 5.5
+            flash_faces = 8
+        elif keyboard.l:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.x -= 5.5
+            else:
+                flash.x += 5.5
+            flash_faces = 4
+        elif keyboard.i:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.y += 5.5
+            else:
+                flash.y -= 5.5
+            flash_faces = 2
+        elif keyboard.k:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+            if flash_confused == True:
+                flash.y -= 5.5
+            else:
+                flash.y += 5.5
+            flash_faces = 6
+        else:
+            flash = Actor("flashmaybe")
+            flash.pos = flash_position
+
+        flash_position = (flash.x, flash.y)

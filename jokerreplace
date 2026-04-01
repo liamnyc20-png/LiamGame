@@ -1,0 +1,78 @@
+    if time.time() - joker_stunned > 4.0:
+        if keyboard.j and keyboard.i:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.x += 3.5
+                joker.y += 3.5
+            else:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            joker_faces = 1
+        elif keyboard.j and keyboard.k:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.x += 3.5
+                joker.y -= 3.5
+            else:
+                joker.x -= 3.5
+                joker.y += 3.5
+            joker_faces = 7
+        elif keyboard.l and keyboard.i:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.x -= 3.5
+                joker.y += 3.5
+            else:
+                joker.x += 3.5
+                joker.y -= 3.5
+            joker_faces = 3
+        elif keyboard.l and keyboard.k:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            else:
+                joker.x += 3.5
+                joker.y += 3.5
+            joker_faces = 5
+        elif keyboard.j:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.x += 5
+            else:
+                joker.x -= 5
+            joker_faces = 8
+        elif keyboard.l:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.x -= 5
+            else:
+                joker.x += 5
+            joker_faces = 4
+        elif keyboard.i:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.y += 5
+            else:
+                joker.y -= 5
+            joker_faces = 2
+        elif keyboard.k:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+            if joker_confused == True:
+                joker.y -= 5
+            else:
+                joker.y += 5
+            joker_faces = 6
+        else:
+            joker = Actor("jokermaybe")
+            joker.pos = joker_position
+
+        joker_position = (joker.x, joker.y)

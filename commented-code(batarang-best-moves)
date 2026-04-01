@@ -1,0 +1,181 @@
+  # if batarang_throw == True:
+    #     if batarang_dir == 1:
+    #         # multiply of 4
+    #         batarang.x -= 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #         # change actor
+    #         batarang.x -= 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 2:
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 3:
+    #         batarang.x += 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang.y -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 4:
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 5:
+    #         batarang.x += 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x += 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 6:
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 7:
+    #         batarang.x -= 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang.y += 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #     elif batarang_dir == 8:
+    #         batarang.x -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downright")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-downleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upleft")
+    #         batarang.pos = batarang_position
+    #         batarang.x -= 2
+    #         batarang_position = batarang.pos
+    #         batarang = Actor("batarang-upright")
+    #         batarang.pos = batarang_position
+        
+        
+                
+        
+
+        # best_moves = []
+        # best_moves_count = 0
+
+        # if superman_batman_distance_left <= superman_batman_distance_right and superman_batman_distance_left <= superman_batman_distance_up and superman_batman_distance_left <= superman_batman_distance_down:
+        #     best_moves.append([Actor("left"), (batman_position[0] - 5, batman_position[1])])
+        #     best_moves_count += 1
+        # if superman_batman_distance_right <= superman_batman_distance_left and superman_batman_distance_right <= superman_batman_distance_up and superman_batman_distance_right <= superman_batman_distance_down:
+        #     best_moves.append([Actor("right"), (batman_position[0] + 5, batman_position[1])])
+        #     best_moves_count += 1
+        # if superman_batman_distance_up <= superman_batman_distance_left and superman_batman_distance_up <= superman_batman_distance_right and superman_batman_distance_up <= superman_batman_distance_down:
+        #     best_moves.append([Actor("up"), (batman_position[0], batman_position[1] - 5)])
+        #     best_moves_count += 1
+        # if superman_batman_distance_down <= superman_batman_distance_left and superman_batman_distance_down <= superman_batman_distance_right and superman_batman_distance_down <= superman_batman_distance_up:
+        #     best_moves.append([Actor("down-or-idle"), (batman_position[0], batman_position[1] + 5)])
+        #     best_moves_count += 1
+
+        # random_best_move = random.randint(0, best_moves_count - 1)
+
+        # batman = best_moves[random_best_move][0]
+        # batman.pos = best_moves[random_best_move][1]
+
+        # batman_stun = 0
