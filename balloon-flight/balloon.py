@@ -71,7 +71,7 @@ def on_mouse_up():
 
 def flap():
     global bird_up
-    if bird_up:
+    if bird_up == True:
         bird.image = "bird-down"
         bird_up = False
     else:

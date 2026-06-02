@@ -2,12 +2,28 @@ import time
 import random
 import pygame
 
-WIDTH = 1500
-HEIGHT = 950
+WIDTH = 1920
+HEIGHT = 1080
 
 player = Actor("supermanmaybe")
 player.x = 50
 player.y = 50
+faces = 0
+
+run = False
+direction = 0
+first_direction = 0
+start_position = Actor("supermanmaybe")
+end_position = Actor("supermanmaybe")
+start_position.x = player.x
+start_position.y = player.y
+end_position.x = player.x
+end_position.y = player.y
+
+start_position_position = (start_position.x, start_position.y)
+end_position_position = (end_position.x, end_position.y)
+
+starttosuperman = True
 
 player_stun = 0
 bot_stun = 0
@@ -51,15 +67,29 @@ def draw():
         player.draw()
         bot.draw()
         hearts.draw()
+        start_position.draw()
+        end_position.draw()
         for i in range(0, NUM_LIGHTNING):
             lightning[i].draw()
 
+
+
 def update():
-    global player, bot, player_stun, bot_stun, cooldown, lives, hearts, game_over
+    global player, bot, player_stun, bot_stun, cooldown, lives, hearts, game_over, run, faces, direction, first_direction, start_posititon, end_position, starttosuperman
     #do run cycles
     if game_over:
         return
     
+    start_position_position = (start_position.x, start_position.y)
+    end_position_position = (end_position.x, end_position.y)
+
+    sp_distance = abs(start_position.x - player.x) + abs(start_position.y - player.y)
+    ep_distance = abs(end_position.x - player.x) + abs(end_position.y - player.y)
+
+    if starttosuperman == True:
+        start_position.x = player.x
+        start_position.y = player.y
+
     for i in range(0, NUM_LIGHTNING):
         lightning[i].y += 5
         if lightning[i].y > HEIGHT:
@@ -74,34 +104,100 @@ def update():
             lightning[i].y = 0
             sounds.lightning_collide.play(1)
             player_stun = time.time()
+            run = False
 
     if time.time() - player_stun > 1.0:
-        if keyboard.left:
+        if keyboard.a:
             player = Actor("supermanmaybe")
             player.pos = player_position
             player.x -= 5
-        elif keyboard.right:
+            faces = 8
+            direction = 8
+        elif keyboard.d:
             player = Actor("supermanmaybe")
             player.pos = player_position
             player.x += 5
-        elif keyboard.up:
+            faces = 4
+            direction = 4
+        elif keyboard.w:
             player = Actor("supermanmaybe")
             player.pos = player_position
             player.y -= 5
-        elif keyboard.down:
+            faces = 2
+            direction = 2
+        elif keyboard.s:
             player = Actor("supermanmaybe")
             player.pos = player_position
             player.y += 5
+            faces = 6
+            direction = 6
         else:
             player = Actor("supermanmaybe")
             player.pos = player_position
+            faces = 0
+            direction = 0
         player_stun = 0
 
-    if keyboard.space:
+    if keyboard.q:
         if time.time() - cooldown > 10:
             player.x = random.randint(int(player.x - 500), int(player.x + 500))
             player.y = random.randint(int(player.y - 500), int(player.y + 500))
             cooldown = time.time()
+
+    if keyboard.e:
+        run = True
+        first_direction = direction
+        direction = 0
+        start_position_position = start_position.pos
+
+    if run == True:
+        if faces == 2:
+            direction = 2
+            player.y -= 10
+        elif faces == 4:
+            direction = 4
+            player.x += 10
+        elif faces == 6:
+            direction = 6
+            player.y += 10
+        elif faces == 8:
+            direction = 8
+            player.x -= 10
+        elif faces == 0:
+            direction = 0
+            run = False
+
+    if run == True and first_direction == 2:
+        if faces == 4 or faces == 6 or faces == 8:
+            direction = 0
+            first_direction = 0
+            run = False
+            starttosuperman = True
+    elif run == True and first_direction == 4:
+        if faces == 2 or faces == 6 or faces == 8:
+            direction = 0
+            first_direction = 0
+            run = False
+            starttosuperman = True
+    elif run == True and first_direction == 6:
+        if faces == 2 or faces == 4 or faces == 8:
+            direction = 0
+            first_direction = 0
+            run = False
+            starttosuperman = True
+    elif run == True and first_direction == 8:
+        if faces == 2 or faces == 4 or faces == 6:
+            direction = 0
+            first_direction = 0
+            run = False
+            starttosuperman = True
+
+    if sp_distance >= 300:
+        direction = 0
+        first_direction = 0
+        run = False
+        starttosuperman = True
+    
 
     if keyboard.f:
         pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
@@ -167,6 +263,7 @@ def update():
         for i in range(0, NUM_LIGHTNING):
             lightning[i].x = random.randint(int(max(player.x - 500, 0)), int(min(player.x + 500, WIDTH)))
             lightning[i].y = 0
+        run = False
     elif bot.colliderect(player) and lives == 1:
         game_over = True
         global end_time

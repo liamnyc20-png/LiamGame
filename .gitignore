@@ -12,5 +12,11 @@ __pycache__/
 # Scratch / temp
 tmpclaude-*
 
+# PyInstaller build output
+build/
+dist/
+*.spec
+game.zip
+
 # Reference PDFs (large; avoid publishing third-party books)
 *.pdf

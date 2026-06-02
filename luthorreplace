@@ -1,0 +1,77 @@
+if luthor_alive == True:
+        if time.time() - luthor_stunned > 4.0:
+            if keyboard.f and keyboard.t:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.x += 3.5
+                    luthor.y += 3.5
+                else:
+                    luthor.x -= 3.5
+                    luthor.y -= 3.5
+                luthor_faces = 1
+            elif keyboard.f and keyboard.g:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.x += 3.5
+                    luthor.y -= 3.5
+                else:
+                    luthor.x -= 3.5
+                    luthor.y += 3.5
+                luthor_faces = 7
+            elif keyboard.h and keyboard.t:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.x -= 3.5
+                    luthor.y += 3.5
+                else:
+                    luthor.x += 3.5
+                    luthor.y -= 3.5
+                luthor_faces = 3
+            elif keyboard.h and keyboard.g:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.x -= 3.5
+                    luthor.y -= 3.5
+                else:
+                    luthor.x += 3.5
+                    luthor.y += 3.5
+                luthor_faces = 5
+            elif keyboard.f:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.x += 5
+                else:
+                    luthor.x -= 5
+                luthor_faces = 8
+            elif keyboard.h:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.x -= 5
+                else:
+                    luthor.x += 5
+                luthor_faces = 4
+            elif keyboard.t:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.y += 5
+                else:
+                    luthor.y -= 5
+                luthor_faces = 2
+            elif keyboard.g:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
+                if luthor_confused == True:
+                    luthor.y -= 5
+                else:
+                    luthor.y += 5
+                luthor_faces = 6
+            else:
+                luthor = Actor("luthorbetter")
+                luthor.pos = luthor_position
