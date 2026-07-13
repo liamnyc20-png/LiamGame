@@ -76,3 +76,22 @@
             joker.pos = joker_position
 
         joker_position = (joker.x, joker.y)
+
+
+joker_upmiddle
+joker_upmleft
+joker_upright
+
+
+joker_downmiddle
+joker_downleft
+joker_downright
+
+joker_leftmiddle
+joker_leftbottom
+joker_lefttop
+
+
+joker_rightmiddle
+joker_righttop
+joker_rightbottom

@@ -1,0 +1,79 @@
+        if time.time() - two_face_stunned > 4.0:
+            if keyboard.K_4 and keyboard.K_8:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.x += 3.5
+                    two_face.y += 3.5
+                else:
+                    two_face.x -= 3.5
+                    two_face.y -= 3.5
+                two_face_faces = 1
+            elif keyboard.K_4 and keyboard.K_5:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.x += 3.5
+                    two_face.y -= 3.5
+                else:
+                    two_face.x -= 3.5
+                    two_face.y += 3.5
+                two_face_faces = 7
+            elif keyboard.K_6 and keyboard.K_8:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.x -= 3.5
+                    two_face.y += 3.5
+                else:
+                    two_face.x += 3.5
+                    two_face.y -= 3.5
+                two_face_faces = 3
+            elif keyboard.K_6 and keyboard.K_5:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.x -= 3.5
+                    two_face.y -= 3.5
+                else:
+                    two_face.x += 3.5
+                    two_face.y += 3.5
+                two_face_faces = 5
+            elif keyboard.K_4:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.x += 5
+                else:
+                    two_face.x -= 5
+                two_face_faces = 8
+            elif keyboard.K_6:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.x -= 5
+                else:
+                    two_face.x += 5
+                two_face_faces = 4
+            elif keyboard.K_8:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.y += 5
+                else:
+                    two_face.y -= 5
+                two_face_faces = 2
+            elif keyboard.K_5:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                if two_face_confused == True:
+                    two_face.y -= 5
+                else:
+                    two_face.y += 5
+                two_face_faces = 6
+            else:
+                two_face = Actor("twofacebetter")
+                two_face.pos = two_face_position
+                two_face_faces = 0
+
+            two_face_position = (two_face.x, two_face.y)

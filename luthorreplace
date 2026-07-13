@@ -75,3 +75,124 @@ if luthor_alive == True:
             else:
                 luthor = Actor("luthorbetter")
                 luthor.pos = luthor_position
+
+
+
+
+
+
+
+if luthor.colliderect(superman) and superman_alive == False:
+        if luthor_faces == 2:
+            luthor.y += 5
+        if luthor_faces == 4:
+            luthor.x -= 5
+        if luthor_faces == 6:
+            luthor.y -=5
+        if luthor_faces == 8:
+            luthor.x += 5
+
+        if luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        if luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        if luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        if luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+
+    if luthor.colliderect(batman) and batman_alive == False:
+        if luthor_faces == 2:
+            luthor.y += 5
+        if luthor_faces == 4:
+            luthor.x -= 5
+        if luthor_faces == 6:
+            luthor.y -=5
+        if luthor_faces == 8:
+            luthor.x += 5
+
+        if luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        if luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        if luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        if luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+    
+    if luthor.colliderect(flash) and flash_alive == False:
+        if luthor_faces == 2:
+            luthor.y += 5
+        if luthor_faces == 4:
+            luthor.x -= 5
+        if luthor_faces == 6:
+            luthor.y -=5
+        if luthor_faces == 8:
+            luthor.x += 5
+
+        if luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        if luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        if luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        if luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+
+    if luthor.colliderect(joker) and joker_alive == False:
+        if luthor_faces == 2:
+            luthor.y += 5
+        if luthor_faces == 4:
+            luthor.x -= 5
+        if luthor_faces == 6:
+            luthor.y -=5
+        if luthor_faces == 8:
+            luthor.x += 5
+
+        if luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        if luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        if luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        if luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+
+    if luthor.colliderect(guy) and guy_alive == False:
+        if luthor_faces == 2:
+            luthor.y += 5
+        if luthor_faces == 4:
+            luthor.x -= 5
+        if luthor_faces == 6:
+            luthor.y -=5
+        if luthor_faces == 8:
+            luthor.x += 5
+
+        if luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        if luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        if luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        if luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5    
