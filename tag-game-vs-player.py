@@ -4,6 +4,8 @@ import random
 import math
 import pygame
 
+# do confused collide
+
 WIDTH = 1920
 HEIGHT = 1080
 
@@ -19,6 +21,8 @@ batman = Actor("batmangood")
 batman.x = 960
 batman.y = 540
 bac = 0
+batman_zero_move = 0
+batmanonbuilding = False
 
 superman = Actor("supermangood")
 # while (True):
@@ -28,6 +32,14 @@ superman = Actor("supermangood")
 #         break
 superman.x = 1060
 superman.y = 440
+lasersuperman = Rect((0, 0), (1500, 8))
+lasersuperman.x = -100
+lasersuperman.y = -100
+lasersuperman_dir = 0
+superman_moving = False
+laser = False
+superman_zero_move = 0
+supermanonbuilding = False
 
 flash = Actor("flashgood")
 # while (True):
@@ -39,6 +51,8 @@ flash.x = 1060
 flash.y = 540
 flash_phase = False
 fpf = 0
+flash_zero_move = 0
+flashonbuilding = False
 
 # cooldowns
 fpc = 0
@@ -55,6 +69,8 @@ guy = Actor("guygood")
 guy.x = 960 
 guy.y = 440
 guy_faces = 0
+guy_zero_move = 0
+guyonbuilding = False
 
 joker = Actor("jokergood")
 # while (True):
@@ -73,6 +89,8 @@ boom = Actor("boomfx")
 boom.x = -100
 boom.y = -100
 boom_wait = 0
+joker_zero_move = 0
+jokeronbuilding = False
 
 joker_upmiddle = Actor("upmiddlecard")
 joker_upleft = Actor("upleft")
@@ -144,6 +162,9 @@ luthor = Actor("luthorgood")
 luthor.x = 860
 luthor.y = 440
 luthor_faces = 0
+luthorneardeath = False
+luthor_zero_move = 0
+luthoronbuilding = False
 
 doomsday = Actor("doomsdaynear")
 doomsday.x = -500
@@ -153,8 +174,9 @@ luthorsday = False
 doomsday_faces = 0
 luthorsday_kill = False
 luthorsday_bleed_count = 0
-luthorneardeath = False
 doomsday_catch = False
+doomsday_jump = False
+doomsdayonbuilding = False
 
 two_face = Actor("twofacebetter")
 two_face.x = 960
@@ -164,6 +186,8 @@ two_face_frozen = False
 bullet_end = Actor("bullet0")
 bullet_end.x = two_face.x
 bullet_end.y = two_face.y
+two_face_zero_move = 0
+two_faceonbuilding = False
 
 superman_stun = 0
 batman_stun = 0
@@ -182,11 +206,6 @@ bpull = 0
 batman_faces = 0
 superman_faces = 0
 flash_faces = 0
-
-lasersuperman = Rect((0, 0), (1500, 8))
-lasersuperman.x = -100
-lasersuperman.y = -100
-lasersuperman_dir = 0
 
 superman_hearts = Actor("bigsupheart")
 # if superman_alive == True:
@@ -303,6 +322,16 @@ guy_shot = False
 joker_helper_shot = False
 luthor_shot = False
 
+superman_falling = False
+batman_falling = False
+flash_falling = False
+joker_falling = False
+guy_falling = False
+joker_falling = False
+luthor_falling = False
+doomsday_falling = False
+two_face_falling = False
+
 game_over = False
 
 players_alive = 0
@@ -344,6 +373,20 @@ p4color = "turquoise"
 
 canplay = False
 playing = False
+
+killfx = Actor("killpopup")
+killfx.x = -100
+killfx.y = -100
+killwait = 0
+
+
+square_building = Rect(-1305, 465, 300, 400)
+square_actor = Actor("squarebuilding")
+square_actor.x = square_building.x + 150
+square_actor.y = square_building.y + 200
+square_door = Actor("square_door")
+square_door.x = square_building.x + 212
+square_door.y = square_building.y + 380
 
 def on_mouse_down(pos):
     global superman, batman, flash, joker, guy, superman_alive, batman_alive, flash_alive, joker_alive, guy_alive, players_alive, superman_lives, batman_lives, flash_lives, joker_lives, guy_lives \
@@ -388,6 +431,7 @@ def on_mouse_down(pos):
         playtextmsg = ""
 
         playing = True
+        square_building.x += 2605
 
         superman_hearts.draw()
         batman_hearts.draw()
@@ -403,6 +447,8 @@ def on_mouse_down(pos):
         screen.draw.text(str(guy_lives), (1870, 38), color="green")
         screen.draw.text(str(luthor_lives), (1145, 38), color="purple")
         screen.draw.text(str(two_face_lives), (1000, 38), color="black")
+
+
 
 
     
@@ -436,13 +482,13 @@ def draw():
         luthor_hearts.draw()
         two_face_hearts.draw()
 
-        screen.draw.text(str(superman_lives), (1290, 38), color="yellow")
-        screen.draw.text(str(batman_lives), (1435, 38), color="yellow")
-        screen.draw.text(str(flash_lives), (1580, 38), color="yellow")
-        screen.draw.text(str(joker_lives), (1725, 38), color="green")
-        screen.draw.text(str(guy_lives), (1870, 38), color="green")
-        screen.draw.text(str(luthor_lives), (1145, 38), color="purple")
-        screen.draw.text(str(two_face_lives), (1000, 38), color="black")
+        screen.draw.text(str(superman_lives if superman_lives != -1000 else 0), (1290, 38), color="yellow")
+        screen.draw.text(str(batman_lives if batman_lives != 1000 else 0), (1435, 38), color="yellow")
+        screen.draw.text(str(flash_lives if flash_lives != -1000 else 0), (1580, 38), color="yellow")
+        screen.draw.text(str(joker_lives if joker_lives != -1000 else 0), (1725, 38), color="green")
+        screen.draw.text(str(guy_lives if guy_lives != -1000 else 0), (1870, 38), color="green")
+        screen.draw.text(str(luthor_lives if luthor_lives != -1000 else 0), (1145, 38), color="purple")
+        screen.draw.text(str(two_face_lives if two_face_lives != -1000 else 0), (1000, 38), color="black")
 
         # Temporary input debug (remove once confirmed working).
         # Shows whether the game sees top-row 4/5/6/8 and numpad 4/5/6/8.
@@ -464,6 +510,10 @@ def draw():
         except Exception:
             pass
 
+        screen.draw.filled_rect(square_building, color="grey")
+        square_actor.draw()
+        square_door.draw()
+
         superman.draw()
         batman.draw()
         flash.draw()
@@ -477,6 +527,7 @@ def draw():
         joker_helper.draw()
         doomsday.draw()
         boom.draw()
+        killfx.draw()
         joker_upmiddle.draw()
         joker_upleft.draw()
         joker_upright.draw()
@@ -489,7 +540,6 @@ def draw():
         joker_rightmiddle.draw()
         joker_righttop.draw()
         joker_rightbottom.draw()
-
 
         screen.draw.filled_rect(lasersuperman, "red")
         for i in range(0, NUM_LIGHTNING):
@@ -511,7 +561,10 @@ def update():
     , joker_helper_caught, luthor_caught, player1, player2, player3, player4, supermanplayer, batmanplayer, flashplayer, jokerplayer, guyplayer, luthorplayer, p1color, p2color \
     , p3color, p4color, canplay, playing, playcolor, playtextcolor, two_face, two_face_stunned, two_face_slowed, two_face_alive, two_face_bleed, two_face_bleed_count \
     , two_face_caught, two_face_confused, two_face_faces, two_face_hearts, luthor_hearts, two_face_lives, superman_shot, batman_shot, flash_shot, joker_shot, guy_shot, joker_helper_shot \
-    , luthor_shot, two_face_frozen, bullet_end
+    , luthor_shot, two_face_frozen, bullet_end, doomsday_jump, killfx, killwait, superman_moving, laser, square_building, superman_zero_move, batman_zero_move, flash_zero_move \
+    , joker_zero_move, guy_zero_move, luthor_zero_move, two_face_zero_move, square_actor, doomsdayonbuilding, square_door, supermanonbuilding, batmanonbuilding, flashonbuilding \
+    , jokeronbuilding, guyonbuilding, luthoronbuilding, two_faceonbuilding, superman_falling, batman_falling, flash_falling, joker_falling, guy_falling, luthor_falling, doomsday_falling \
+    , two_face_falling
 
     #do run cycles
     if game_over:
@@ -604,6 +657,12 @@ def update():
 
     doomsday_two_face_distance = (abs(doomsday.x - two_face.x)) + (abs(doomsday.y - two_face.y))
 
+    square_actor.x = square_building.x + 150
+    square_actor.y = square_building.y + 200
+
+    square_door.x = square_building.x + 212
+    square_door.y = square_building.y + 380
+
     if player1 == 1:
         p1color = "#4d6df3"
     elif player1 == 2:
@@ -685,82 +744,158 @@ def update():
         playtextcolor = "dimgrey"
         
 
+    if superman_lives <= 0 and superman_lives >= -100 and superman_alive == True:
+        superman_lives = -1000
+        superman_alive = False
+        killfx.x = superman.x
+        killfx.y = superman.y
+        killwait = time.time()
+    elif superman_lives <= 0 and superman_alive == False:
+        superman_lives = 0
+
     if superman_lives <= 0:
         superman_lives = 0
-        superman_alive = False
 
-    if superman_alive == False:
+    if superman_alive == False and playing == True:
         superman = Actor("supermandead")
         superman.pos = superman_position
+        # superman.x = -500
+        # superman.y = -500
     elif superman_alive == True and lasersuperman == False and superman_slowed == False and (superman_batman_distance >= 400 or superman_flash_distance >= 400):
         superman = Actor("supermangood")
         superman.pos = superman_position
+        
+    if batman_lives <= 0 and batman_lives >= -100 and batman_alive == True:
+        batman_lives = -1000
+        batman_alive = False
+        killfx.x = batman.x
+        killfx.y = batman.y
+        killwait = time.time()
+    elif batman_lives <= 0 and batman_alive == False:
+        batman_lives = 0
 
     if batman_lives <= 0:
         batman_lives = 0
-        batman_alive = False
 
-    if batman_alive == False:
+    if batman_alive == False and playing == True:
         batman = Actor("batmandead")
         batman.pos = batman_position
+        # batman.x = -500
+        # batman.y = -400
     elif batman_alive == True and superman_batman_distance >= 300 and batman_stunned == False and batman_slowed == False:
         batman = Actor("batmangood")
         batman.pos = batman_position
 
+    if flash_lives <= 0 and flash_lives >= -100 and flash_alive == True:
+        flash_lives = -1000
+        flash_alive = False
+        killfx.x = flash.x
+        killfx.y = flash.y
+        killwait = time.time()
+    elif flash_lives <= 0 and flash_alive == False:
+        flash_lives = 0
+
     if flash_lives <= 0:
         flash_lives = 0
-        flash_alive = False
 
-    if flash_alive == False:    
+    if flash_alive == False and playing == True:    
         flash = Actor("flashdead")
         flash.pos = flash_position
+        # flash.x = -500
+        # flash.y = -500
     elif flash_alive == True and flash_phase == False:
         flash = Actor("flashgood")
         flash.pos = flash_position
 
+    if guy_lives <= 0 and guy_lives >= -100 and guy_alive == True:
+        guy_lives = -1000
+        guy_alive = False
+        killfx.x = guy.x
+        killfx.y = guy.y
+        killwait = time.time()
+    elif guy_lives <= 0 and guy_alive == False:
+        guy_lives = 0
+
     if guy_lives <= 0:
         guy_lives = 0
-        guy_alive = False
 
-    if guy_alive == False:
+    if guy_alive == False and playing == True:
         guy = Actor("guydead")
         guy.pos = guy_position
+        # guy.x = -500
+        # guy.y = -500
     else:
         guy = Actor("guygood")
         guy.pos = guy_position
 
+    if joker_lives <= 0 and joker_lives >= -100 and joker_alive == True:
+        joker_lives = -1000
+        joker_alive = False
+        killfx.x = joker.x
+        killfx.y = joker.y
+        killwait = time.time()
+    elif joker_lives <= 0 and joker_alive == False:
+        joker_lives = 0
+
     if joker_lives <= 0:
         joker_lives = 0
-        joker_alive = False
 
-    if joker_alive == False:
+    if joker_alive == False and playing == True:
         joker = Actor("jokerdead")
         joker.pos = joker_position
+        # joker.x = -500
+        # joker.y = -500
     else:
         joker = Actor("jokergood")
         joker.pos = joker_position
 
+    if luthor_lives <= 0 and luthor_lives >= -100 and luthor_alive == True:
+        luthor_lives = -1000
+        luthor_alive = False
+        killfx.x = luthor.x
+        killfx.y = luthor.y
+        killwait = time.time()
+    elif luthor_lives <= 0 and luthor_alive == False:
+        luthor_lives = 0
+
     if luthor_lives <= 0:
         luthor_lives = 0
-        luthor_alive = False
 
-    if luthor_alive == False:
+    if luthor_alive == False and playing == True:
         luthor = Actor("luthordead")
         luthor.pos = luthor_position
+        # luthor.x = -500
+        # luthor.y = -500
     else:
         luthor = Actor("luthorgood")
         luthor.pos = luthor_position
 
+    if two_face_lives <= 0 and two_face_lives >= -100 and two_face_alive == True:
+        two_face_lives = -1000
+        two_face_alive = False
+        killfx.x = two_face.x
+        killfx.y = two_face.y
+        killwait = time.time()
+    elif two_face_lives <= 0 and two_face_alive == False:
+        two_face_lives = 0
+
     if two_face_lives <= 0:
         two_face_lives = 0
-        two_face_alive = False
 
-    if two_face_alive == False:
+    if two_face_alive == False and playing == True:
         two_face = Actor("twofacedead")
         two_face.pos = two_face_position
+        # two_face.x = -500
+        # two_face.y = 500
     else:
         two_face = Actor("twofacebetter")
         two_face.pos = two_face_position
+
+    if time.time() - killwait > 0.5:
+        killfx.x = -100
+        killfx.y = -100
+        
+        
 
 
     if supermanplayer == 1:
@@ -892,7 +1027,7 @@ def update():
                             superman.x -= 3.5
                             superman.y -= 3.5
                     superman_faces = 1
-
+                    superman_moving = True
                 elif keyboard.a and keyboard.s:
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
@@ -913,7 +1048,7 @@ def update():
                             superman.x -= 3.5
                             superman.y += 3.5
                     superman_faces = 7
-
+                    superman_moving = True
                 elif keyboard.d and keyboard.w:
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
@@ -934,7 +1069,7 @@ def update():
                             superman.x += 3.5
                             superman.y -= 3.5
                     superman_faces = 3
-
+                    superman_moving = True
                 elif keyboard.d and keyboard.s:
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
@@ -955,7 +1090,7 @@ def update():
                             superman.x += 3.5
                             superman.y += 3.5
                     superman_faces = 5
-
+                    superman_moving = True
                 elif keyboard.a:
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
@@ -972,7 +1107,7 @@ def update():
                         else:
                             superman.x -= 5
                     superman_faces = 8
-
+                    superman_moving = True
                 elif keyboard.d:
                     if superman_slowed == True:
                         superman = Actor("kryptonicegood")
@@ -989,7 +1124,7 @@ def update():
                         else:
                             superman.x += 5
                     superman_faces = 4
-
+                    superman_moving = True
                 elif keyboard.w:
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
@@ -1006,7 +1141,7 @@ def update():
                         else:
                             superman.y -= 5
                     superman_faces = 2
-
+                    superman_moving = True
                 elif keyboard.s:
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
@@ -1023,9 +1158,11 @@ def update():
                         else:
                             superman.y += 5
                     superman_faces = 6
+                    superman_moving = True
 
                 else:
-                    superman_faces = 0
+                    # superman_faces = 0
+                    superman_moving = False
                     if superman_slowed:
                         superman = Actor("kryptonicegood")
                     else:
@@ -1033,6 +1170,8 @@ def update():
                     superman.pos = superman_position
                 superman_stun = 0
         superman_position = (superman.x, superman.y)
+    
+
     # if keyboard.space:
     #     if time.time() - ice_cooldown > 10:
     #         superman.x = random.randint(int(superman.x - 500), int(superman.x + 500))
@@ -1082,13 +1221,32 @@ def update():
             superman.pos = superman_position
 
     if superman_alive == True:
-        if keyboard.e:
+        if keyboard.e and superman_moving == False:
             lasersuperman_dir = superman_faces
+            laser = True
 
+    else:
+        lasersuperman.x = -100
+        lasersuperman.y = -100
+
+    if laser == True:
         if lasersuperman_dir == 2:
             lasersuperman.width = 8
             lasersuperman.height = superman.y - 15
             lasersuperman.x = superman.x - 5
+            # if batman.colliderect(lasersuperman):
+            #     lasersuperman.y = batman.y
+            # elif lasersuperman.colliderect(flash):
+            #     lasersuperman.y = flash.y
+            # elif lasersuperman.colliderect(joker):
+            #     lasersuperman.y = joker.y
+            # elif lasersuperman.colliderect(guy):
+            #     lasersuperman.y = guy.y
+            # elif lasersuperman.colliderect(luthor):
+            #     lasersuperman.y = luthor.y
+            # elif lasersuperman.colliderect(doomsday):
+            #     lasersuperman.y = doomsday.y
+            # else:
             lasersuperman.y = 0
 
         elif lasersuperman_dir == 6:
@@ -1109,9 +1267,19 @@ def update():
             lasersuperman.x = 0
             lasersuperman.y = superman.y - 23
 
-    else:
-        lasersuperman.x = -100
-        lasersuperman.y = -100
+    if laser == True:
+        if (lasersuperman_dir == 2 and (superman_faces != 2 and superman_faces != 6)) or (lasersuperman_dir == 6 and (superman_faces != 2 and superman_faces != 6)):
+            laser = False
+            lasersuperman_dir = 0
+            lasersuperman.x = -100
+            lasersuperman.y = -100
+
+    if laser == True:
+        if (lasersuperman_dir == 4 and (superman_faces != 4 and superman_faces != 8)) or (lasersuperman_dir == 8 and (superman_faces != 4 and superman_faces != 8)):
+            laser = False
+            lasersuperman_dir = 0
+            lasersuperman.x = -100
+            lasersuperman.y = -100
 
     if batman.colliderect(lasersuperman):
         if lasersuperman_dir == 2 or lasersuperman_dir == 6:
@@ -1654,8 +1822,8 @@ def update():
         # if time.time() - two_face_stunned > 4.0:
             two_face_position = (two_face.x, two_face.y)
             if keyboard[keys.K_4] and keyboard[keys.K_8]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == False:
                     print("here1")
                     two_face.x -= 3.5
@@ -1666,8 +1834,8 @@ def update():
                     two_face.y += 3.5
                 two_face_faces = 1
             elif keyboard[keys.K_4] and keyboard[keys.K_5]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.x += 3.5
                     two_face.y -= 3.5
@@ -1676,8 +1844,8 @@ def update():
                     two_face.y += 3.5
                 two_face_faces = 7
             elif keyboard[keys.K_6] and keyboard[keys.K_8]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.x -= 3.5
                     two_face.y += 3.5
@@ -1686,8 +1854,8 @@ def update():
                     two_face.y -= 3.5
                 two_face_faces = 3
             elif keyboard[keys.K_6] and keyboard[keys.K_5]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.x -= 3.5
                     two_face.y -= 3.5
@@ -1696,40 +1864,40 @@ def update():
                     two_face.y += 3.5
                 two_face_faces = 5
             elif keyboard[keys.K_4]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.x += 5
                 else:
                     two_face.x -= 5
                 two_face_faces = 8
             elif keyboard[keys.K_6]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.x -= 5
                 else:
                     two_face.x += 5
                 two_face_faces = 4
             elif keyboard[keys.K_8]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.y += 5
                 else:
                     two_face.y -= 5
                 two_face_faces = 2
             elif keyboard[keys.K_5]:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 if two_face_confused == True:
                     two_face.y -= 5
                 else:
                     two_face.y += 5
                 two_face_faces = 6
             else:
-                two_face = Actor("twofacebetter")
-                two_face.pos = two_face_position
+                # two_face = Actor("twofacebetter")
+                # two_face.pos = two_face_position
                 two_face_faces = 0
 
             two_face_position = (two_face.x, two_face.y)
@@ -2817,8 +2985,12 @@ def update():
                         luthor.y -= 3.5
                     luthor_faces = 1
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.x -= 3.5
                     doomsday.y -= 3.5
                     doomsday_faces = 1
@@ -2834,8 +3006,12 @@ def update():
                         luthor.y += 3.5
                     luthor_faces = 7
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.x -= 3.5
                     doomsday.y += 3.5
                     doomsday_faces = 7
@@ -2851,8 +3027,12 @@ def update():
                         luthor.y -= 3.5
                     luthor_faces = 3
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.x += 3.5
                     doomsday.y -= 3.5
                     doomsday_faces = 3
@@ -2868,8 +3048,12 @@ def update():
                         luthor.y += 3.5
                     luthor_faces = 5
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.x += 3.5
                     doomsday.y += 3.5
                     doomsday_faces = 5
@@ -2883,8 +3067,12 @@ def update():
                         luthor.x -= 5
                     luthor_faces = 8
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.x -= 5
                     doomsday_faces = 8
             elif keyboard.h:
@@ -2897,8 +3085,12 @@ def update():
                         luthor.x += 5
                     luthor_faces = 4
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.x += 5
                     doomsday_faces = 4
             elif keyboard.t:
@@ -2911,8 +3103,12 @@ def update():
                         luthor.y -= 5
                     luthor_faces = 2
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.y -= 5
                     doomsday_faces = 2
             elif keyboard.g:
@@ -2925,26 +3121,47 @@ def update():
                         luthor.y += 5
                     luthor_faces = 6
                 else:
-                    doomsday = Actor("doomsdaynear")
-                    doomsday.pos = doomsday_position
+                    if doomsday_jump == False:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
                     doomsday.y += 5
                     doomsday_faces = 6
             else:
-                luthor = Actor("luthorgood")
                 luthor.pos = luthor_position
                 luthor_faces = 0
                 doomsday_faces = 0
+                if luthorsday == True:
+                    if doomsday_jump == True:
+                        doomsday = Actor("doomsdayjumpnear")
+                        doomsday.pos = doomsday_position
+                    else:
+                        doomsday = Actor("doomsdaynear")
+                        doomsday.pos = doomsday_position
+                elif luthorsday == False or (luthorsday == True and luthor_lives > 0):
+                    luthor = Actor("luthorgood")
+                    luthor.pos = luthor_position
 
     luthorsday_bleed_count += 1
 
-    if keyboard.r:
+    if keyboard.r and luthorsday == False and luthor_alive == True:
         doomsday_alive = True
-        doomsday.x = luthor.x
+        doomsday.x = (luthor.x - 65)
         doomsday.y = luthor.y
         doomsday_position = luthor_position
         luthorsday = True
         luthorsday_kill = True
         luthorneardeath = True
+    elif keyboard.r and luthorsday == True and doomsday.x != luthor.x and doomsday.y != luthor.y and doomsday_jump == False:
+        doomsday_jump = True
+        doomsday = Actor("doomsdayjumpnear")
+        doomsday.pos = doomsday_position
+    elif keyboard.r and luthorsday == True and doomsday_jump == True:
+        doomsday_jump = False
+        doomsday = Actor("doomsdaynear")
+        doomsday.pos = doomsday_position
 
 
     if luthorneardeath == True:
@@ -2960,33 +3177,64 @@ def update():
         luthorsday_kill = False
         luthorsday_bleed_count = 0
 
-    if superman_caught == True:
+    if superman_caught == True and doomsday_jump == False:
         superman.x = doomsday.x
         superman.y = doomsday.y - 50
-    if batman_caught == True:
+    elif superman_caught == True and doomsday_jump == True:
+        superman.x = doomsday.x
+        superman.y = doomsday.y - 82
+
+    if batman_caught == True and doomsday_jump == False:
         batman.x = doomsday.x
         batman.y = doomsday.y - 50
-    if flash_caught == True:
+    elif batman_caught == True and doomsday_jump == True:
+        batman.x = doomsday.x
+        batman.y = doomsday.y - 82
+
+    if flash_caught == True and doomsday_jump == False:
         flash.x = doomsday.x
         flash.y = doomsday.y - 50
-    if joker_caught == True:
+    elif flash_caught == True and doomsday_jump == True:
+        flash.x = doomsday.x
+        flash.y = doomsday.y - 82
+
+    if joker_caught == True and doomsday_jump == False:
         joker.x = doomsday.x
         joker.y = doomsday.y - 50
-    if guy_caught == True:
+    elif joker_caught == True and doomsday_jump == True:
+        joker.x = doomsday.x
+        joker.y = doomsday.y - 82
+
+    if guy_caught == True and doomsday_jump == False:
         guy.x = doomsday.x
         guy.y = doomsday.y - 50
-    if joker_helper_caught == True:
+    elif guy_caught == True and doomsday_jump == True:
+        guy.x = doomsday.x
+        guy.y = doomsday.y - 82
+
+    if joker_helper_caught == True and doomsday_jump == False:
         joker_helper.x = doomsday.x
         joker_helper.y = doomsday.y - 50
-    if luthor_caught == True:
+    elif joker_helper_caught == True and doomsday_jump == True:
+        joker_helper.x = doomsday.x
+        joker_helper.y = doomsday.y - 82
+
+    if luthor_caught == True and doomsday_jump == False:
         luthor.x = doomsday.x
         luthor.y = doomsday.y - 50
-    if two_face_caught == True:
+    elif luthor_caught == True and doomsday_jump == True:
+        luthor.x = doomsday.x
+        luthor.y = doomsday.y - 82
+
+    if two_face_caught == True and doomsday_jump == False:
+        two_face.x = doomsday.x
+        two_face.y = doomsday.y - 50
+    elif two_face_caught == True and doomsday_jump == True:
         two_face.x = doomsday.x
         two_face.y = doomsday.y - 50
 
     if keyboard.y:
-        if doomsday_catch == False:
+        if doomsday_catch == False and doomsday_jump == False:
             if doomsday.colliderect(superman):
                 superman_caught = True
                 doomsday_catch = True
@@ -3016,174 +3264,106 @@ def update():
             if superman_caught == True:
                 if doomsday_faces == 2:
                     superman.y = 0
-                    superman_caught = False
-                    doomsday_catch = False
-                    superman_lives -= 15
                 if doomsday_faces == 4:
                     superman.x = WIDTH
-                    superman_caught = False
-                    doomsday_catch = False
-                    superman_lives -= 15
                 if doomsday_faces == 6:
                     superman.y = HEIGHT
-                    superman_caught = False
-                    doomsday_catch = False
-                    superman_lives -= 15
                 if doomsday_faces == 8:
                     superman.x = 0
-                    superman_caught = False
-                    doomsday_catch = False
-                    superman_lives -= 15
+                superman_caught = False
+                doomsday_catch = False
+                superman_lives -= 25
+                    
 
             elif batman_caught == True:
                 if doomsday_faces == 2:
                     batman.y = 0
-                    batman_caught = False
-                    doomsday_catch = False
-                    batman_lives -= 15
                 if doomsday_faces == 4:
                     batman.x = WIDTH
-                    batman_caught = False
-                    doomsday_catch = False
-                    batman_lives -= 15
                 if doomsday_faces == 6:
                     batman.y = HEIGHT
-                    batman_caught = False
-                    doomsday_catch = False
-                    batman_lives -= 15
                 if doomsday_faces == 8:
                     batman.x = 0
-                    batman_caught = False
-                    doomsday_catch = False
-                    batman_lives -= 15
+                batman_caught = False
+                doomsday_catch = False
+                batman_lives -= 30
 
             elif flash_caught == True:
                 if doomsday_faces == 2:
                     flash.y = 0
-                    flash_caught = False
-                    doomsday_catch = False
-                    flash_lives -= 15
                 if doomsday_faces == 4:
                     flash.x = WIDTH
-                    flash_caught = False
-                    doomsday_catch = False
-                    flash_lives -= 15
                 if doomsday_faces == 6:
                     flash.y = HEIGHT
-                    flash_caught = False
-                    doomsday_catch = False
-                    flash_lives -= 15
                 if doomsday_faces == 8:
                     flash.x = 0
-                    flash_caught = False
-                    doomsday_catch = False
-                    flash_lives -= 15
+                flash_caught = False
+                doomsday_catch = False
+                flash_lives -= 30
 
             elif joker_caught == True:
                 if doomsday_faces == 2:
                     joker.y = 0
-                    joker_caught = False
-                    doomsday_catch = False
-                    joker_lives -= 15
                 if doomsday_faces == 4:
                     joker.x = WIDTH
-                    joker_caught = False
-                    doomsday_catch = False
-                    joker_lives -= 15
                 if doomsday_faces == 6:
                     joker.y = HEIGHT
-                    joker_caught = False
-                    doomsday_catch = False
-                    joker_lives -= 15
                 if doomsday_faces == 8:
                     joker.y = 0
-                    joker_caught = False
-                    doomsday_catch = False
-                    joker_lives -= 15
+                joker_caught = False
+                doomsday_catch = False
+                joker_lives -= 30
 
             elif joker_helper_caught == True:
                 if doomsday_faces == 2:
                     joker_helper.y = 0
-                    joker_helper_caught = False
-                    doomsday_catch = False
                 if doomsday_faces == 4:
                     joker_helper.x = WIDTH
-                    joker_helper_caught = False
-                    doomsday_catch = False
                 if doomsday_faces == 6:
                     joker_helper.y = HEIGHT
-                    joker_helper_caught = False
-                    doomsday_catch = False
                 if doomsday_faces == 8:
                     joker_helper.x = 0
-                    joker_helper_caught = False
-                    doomsday_catch = False
+                joker_helper_caught = False
+                doomsday_catch = False
 
             elif guy_caught == True:
                 if doomsday_faces == 2:
                     guy.y = 0
-                    guy_caught = False
-                    doomsday_catch = False
-                    guy_lives -= 15
                 if doomsday_faces == 4:
                     guy.x = WIDTH
-                    guy_caught = False
-                    doomsday_catch = False
-                    guy_lives -= 15
                 if doomsday_faces == 6:
                     guy.y = HEIGHT
-                    guy_caught = False
-                    doomsday_catch = False
-                    guy_lives -= 15
                 if doomsday_faces == 8:
                     guy.x = 0
-                    guy_caught = False
-                    doomsday_catch = False
-                    guy_lives -= 15
+                guy_caught = False
+                doomsday_catch = False
+                guy_lives -= 50
 
             elif luthor_caught == True:
                 if doomsday_faces == 2:
                     luthor.y = 0
-                    luthor_caught = False
-                    doomsday_catch = False
-                    luthor_lives -= 15
                 if doomsday_faces == 4:
                     luthor.x = WIDTH
-                    luthor_caught = False
-                    doomsday_catch = False
-                    luthor_lives -= 15
                 if doomsday_faces == 6:
                     luthor.y = HEIGHT
-                    luthor_caught = False
-                    doomsday_catch = False
-                    luthor_lives -= 15
                 if doomsday_faces == 8:
                     luthor.x = 0
-                    luthor_caught = False
-                    doomsday_catch = False
-                    luthor_lives -= 15
+                luthor_caught = False
+                doomsday_catch = False
+                luthor_lives -= 27
 
             elif two_face_caught == True:
                 if doomsday_faces == 2:
                     two_face.y = 0
-                    two_face_caught = False
-                    doomsday_catch = False
-                    two_face_lives -= 15
                 if doomsday_faces == 4:
                     two_face.x = WIDTH
-                    two_face_caught = False
-                    doomsday_catch = False
-                    two_face_lives -= 15
                 if doomsday_faces == 6:
                     two_face.y = HEIGHT
-                    two_face_caught = False
-                    doomsday_catch = False
-                    two_face_lives -= 15
                 if doomsday_faces == 8:
                     two_face.x = 0
-                    two_face_caught = False
-                    doomsday_catch = False
-                    two_face_lives -= 15
+                two_face_caught = False
+                doomsday_catch = False
+                two_face_lives -= 30
 
 
 
@@ -3356,6 +3536,7 @@ def update():
 
     if batarang.colliderect(superman) and breturn == False:
         superman_confused = True
+        superman_lives -= 10
         dx = batman.x - superman.x
         dy = batman.y - superman.y
         total_superman_batman_distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -3382,6 +3563,7 @@ def update():
             batarang_dir = 4
     elif batarang.colliderect(flash) and flash_phase == False and breturn == False:
         flash_confused = True
+        flash_lives -= 15
         dx = batman.x - flash.x
         dy = batman.y - flash.y
         total_batman_flash_distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -3408,6 +3590,7 @@ def update():
             batarang_dir = 4
     elif batarang.colliderect(joker) and breturn == False:
         joker_confused = True
+        joker_lives -= 15
         dx = batman.x - joker.x
         dy = batman.y - joker.y
         total_batman_joker_distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -3434,6 +3617,7 @@ def update():
             batarang_dir = 4
     elif batarang.colliderect(guy) and breturn == False:
         guy_confused = True
+        guy_lives -= 20
         dx = batman.x - guy.x
         dy = batman.y - guy.y
         total_batman_guy_distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -3460,6 +3644,7 @@ def update():
             batarang_dir = 4
     elif batarang.colliderect(luthor) and breturn == False:
         luthor_confused = True
+        luthor_lives -= 12
         dx = batman.x - luthor.x
         dy = batman.y - luthor.y
         total_batman_luthor_distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -3486,6 +3671,7 @@ def update():
             batarang_dir = 4
     elif batarang.colliderect(two_face) and breturn == False:
         two_face_confused = True
+        two_face_lives -= 15
         dx = batman.x - two_face.x
         dy = batman.y - two_face.y
         total_batman_two_face_distance = math.sqrt(dx ** 2 + dy ** 2)
@@ -3510,11 +3696,30 @@ def update():
             batarang_dir = 3
         elif batarang_dir == 8:
             batarang_dir = 4
+    elif batarang.colliderect(square_building) and breturn == False:
+        breturn = True
+        if batarang_dir == 1:
+            batarang_dir = 5
+        elif batarang_dir == 2:
+            batarang_dir = 6
+        elif batarang_dir == 3:
+            batarang_dir = 7
+        elif batarang_dir == 4:
+            batarang_dir = 8
+        elif batarang_dir == 5:
+            batarang_dir = 1
+        elif batarang_dir == 6:
+            batarang_dir = 2
+        elif batarang_dir == 7:
+            batarang_dir = 3
+        elif batarang_dir == 8:
+            batarang_dir = 4
 
     if batarang.colliderect(joker_helper):
         joker_helper.x = -100
         joker_helper.y = -100
         joker_helper_alive = False
+        breturn = True
 
     # if breturn == True:
     #     if batarang_dir == 1:
@@ -3630,1245 +3835,2441 @@ def update():
     if batman.colliderect(superman) and superman_alive == False:
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
-            batman.y -=5
-        if batman_faces == 8:
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
             batman.x += 5
 
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
+
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
 
     if batman.colliderect(flash) and flash_alive == False:
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
-            batman.y -=5
-        if batman_faces == 8:
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
             batman.x += 5
 
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
+
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
 
     if batman.colliderect(guy) and guy_alive == False:
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
-            batman.y -=5
-        if batman_faces == 8:
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
             batman.x += 5
 
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
+
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
 
     if batman.colliderect(joker) and joker_alive == False:
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
-            batman.y -=5
-        if batman_faces == 8:
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
             batman.x += 5
         
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
+
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
 
     if batman.colliderect(luthor) and luthor_alive == False:
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
-            batman.y -=5
-        if batman_faces == 8:
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
             batman.x += 5
         
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
+
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
 
     if batman.colliderect(two_face) and two_face_alive == False:
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
-            batman.y -=5
-        if batman_faces == 8:
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
             batman.x += 5
         
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
 
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
+
+    if batman.colliderect(square_building) and batmanonbuilding == False:
+        if batman_faces == 2:
+            batman.y += 5
+        elif batman_faces == 4:
+            batman.x -= 5
+        elif batman_faces == 6:
+            batman.y -= 5
+        elif batman_faces == 8:
+            batman.x += 5
+        
+        elif batman_faces == 1:
+            batman.x += 3.5
+            batman.y += 3.5
+        elif batman_faces == 3:
+            batman.x -= 3.5
+            batman.y += 3.5
+        elif batman_faces == 5:
+            batman.x -= 3.5
+            batman.y -= 3.5
+        elif batman_faces == 7:
+            batman.x += 3.5
+            batman.y -= 3.5
+
+        elif batman_faces == 0:
+            batman_zero_move = random.randint(1, 8)
+            if batman_zero_move == 2:
+                batman.y += 5
+            elif batman_zero_move == 4:
+                batman.x -= 5
+            elif batman_zero_move == 6:
+                batman.y -= 5
+            elif batman_zero_move == 8:
+                batman.x += 5
+
+            elif batman_zero_move == 1:
+                batman.x += 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 3:
+                batman.x -= 3.5
+                batman.y += 3.5
+            elif batman_zero_move == 5:
+                batman.x -= 3.5
+                batman.y -= 3.5
+            elif batman_zero_move == 7:
+                batman.x += 3.5
+                batman.y -= 3.5
+
+    if batman.colliderect(square_door):
+        batmanonbuilding = True
+        # batman.x = pass
+        batman.y = square_door.y - 331
+
+    if not batman.colliderect(square_building):
+        if batmanonbuilding == True:
+            batman_lives -= 10
+            batmanonbuilding = False
+            if batman.y < 830:
+                batman_falling = True
+        else:
+            batmanonbuilding = False
+    
+    if batman_falling == True:
+        batman.y += 20
+
+    if batman.y >= 830:
+        batman_falling = False
+        
+    
 
     if superman.colliderect(batman) and batman_alive == False:
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if batman_faces == 6:
+        elif superman_faces == 6:
             superman.y -=5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
+        
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
 
     if superman.colliderect(flash) and flash_alive == False:
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if batman_faces == 6:
+        elif superman_faces == 6:
             superman.y -=5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
+
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
 
     if superman.colliderect(guy) and guy_alive == False:
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if batman_faces == 6:
+        elif superman_faces == 6:
             superman.y -=5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
+
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
 
     if superman.colliderect(joker) and joker_alive == False:
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if batman_faces == 6:
+        elif superman_faces == 6:
             superman.y -=5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
+
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
 
     if superman.colliderect(luthor) and luthor_alive == False:
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if batman_faces == 6:
+        elif superman_faces == 6:
             superman.y -=5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
+
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
 
     if superman.colliderect(two_face) and two_face_alive == False:
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if batman_faces == 6:
+        elif superman_faces == 6:
             superman.y -=5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
+
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
+
+    if superman.colliderect(square_building) and supermanonbuilding == False:
+        if superman_faces == 2:
+            superman.y += 5
+        elif superman_faces == 4:
+            superman.x -= 5
+        elif superman_faces == 6:
+            superman.y -= 5
+        elif superman_faces == 8:
+            superman.x += 5
+        
+        elif superman_faces == 1:
+            superman.x += 3.5
+            superman.y += 3.5
+        elif superman_faces == 3:
+            superman.x -= 3.5
+            superman.y += 3.5
+        elif superman_faces == 5:
+            superman.x -= 3.5
+            superman.y -= 3.5
+        elif superman_faces == 7:
+            superman.x += 3.5
+            superman.y -= 3.5
+
+        elif superman_faces == 0:
+            superman_zero_move = random.randint(1, 8)
+            if superman_zero_move == 2:
+                superman.y += 5
+            elif superman_zero_move == 4:
+                superman.x -= 5
+            elif superman_zero_move == 6:
+                superman.y -= 5
+            elif superman_zero_move == 8:
+                superman.x += 5
+
+            elif superman_zero_move == 1:
+                superman.x += 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 3:
+                superman.x -= 3.5
+                superman.y += 3.5
+            elif superman_zero_move == 5:
+                superman.x -= 3.5
+                superman.y -= 3.5
+            elif superman_zero_move == 7:
+                superman.x += 3.5
+                superman.y -= 3.5
+
+    if superman.colliderect(square_door):
+        supermanonbuilding = True
+        # batman.x = pass
+        superman.y = square_door.y - 331
+
+    if not superman.colliderect(square_building):
+        supermanonbuilding = False
 
 
     if flash.colliderect(superman) and superman_alive == False:
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
 
     if flash.colliderect(batman) and batman_alive == False:
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
 
     if flash.colliderect(guy) and guy_alive == False:
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
 
     if flash.colliderect(joker) and joker_alive == False:
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
 
     if flash.colliderect(luthor) and luthor_alive == False:
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
 
     if flash.colliderect(two_face) and two_face_alive == False:
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
+
+    if flash.colliderect(square_building) and flashonbuilding == False:
+        if flash_faces == 2:
+            flash.y += 5
+        elif flash_faces == 4:
+            flash.x -= 5
+        elif flash_faces == 6:
+            flash.y -= 5
+        elif flash_faces == 8:
+            flash.x += 5
+        
+        elif flash_faces == 1:
+            flash.x += 3.5
+            flash.y += 3.5
+        elif flash_faces == 3:
+            flash.x -= 3.5
+            flash.y += 3.5
+        elif flash_faces == 5:
+            flash.x -= 3.5
+            flash.y -= 3.5
+        elif flash_faces == 7:
+            flash.x += 3.5
+            flash.y -= 3.5
+
+        elif flash_faces == 0:
+            flash_zero_move = random.randint(1, 8)
+            if flash_zero_move == 2:
+                flash.y += 5
+            elif flash_zero_move == 4:
+                flash.x -= 5
+            elif flash_zero_move == 6:
+                flash.y -= 5
+            elif flash_zero_move == 8:
+                flash.x += 5
+
+            elif flash_zero_move == 1:
+                flash.x += 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 3:
+                flash.x -= 3.5
+                flash.y += 3.5
+            elif flash_zero_move == 5:
+                flash.x -= 3.5
+                flash.y -= 3.5
+            elif flash_zero_move == 7:
+                flash.x += 3.5
+                flash.y -= 3.5
+
+    if flash.colliderect(square_door):
+        flashonbuilding = True
+        # batman.x = pass
+        flash.y = square_door.y - 331
+
+    if not flash.colliderect(square_building):
+        flashonbuilding = False
 
 
     if guy.colliderect(superman) and superman_alive == False:
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -=5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
 
     if guy.colliderect(batman) and batman_alive == False:
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -=5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
     
     if guy.colliderect(flash) and flash_alive == False:
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -=5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
 
     if guy.colliderect(joker) and joker_alive == False:
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -=5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
 
     if guy.colliderect(luthor) and luthor_alive == False:
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -=5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
         
     if guy.colliderect(two_face) and two_face_alive == False:
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -=5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
+
+    if guy.colliderect(square_building) and guyonbuilding == False:
+        if guy_faces == 2:
+            guy.y += 5
+        elif guy_faces == 4:
+            guy.x -= 5
+        elif guy_faces == 6:
+            guy.y -=5
+        elif guy_faces == 8:
+            guy.x += 5
+
+        elif guy_faces == 1:
+            guy.x += 3.5
+            guy.y += 3.5
+        elif guy_faces == 3:
+            guy.x -= 3.5
+            guy.y += 3.5
+        elif guy_faces == 5:
+            guy.x -= 3.5
+            guy.y -= 3.5
+        elif guy_faces == 7:
+            guy.x += 3.5
+            guy.y -= 3.5
+
+        elif guy_faces == 0:
+            guy_zero_move = random.randint(1, 8)
+            if guy_zero_move == 2:
+                guy.y += 5
+            elif guy_zero_move == 4:
+                guy.x -= 5
+            elif guy_zero_move == 6:
+                guy.y -= 5
+            elif guy_zero_move == 8:
+                guy.x += 5
+
+            elif guy_zero_move == 1:
+                guy.x += 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 3:
+                guy.x -= 3.5
+                guy.y += 3.5
+            elif guy_zero_move == 5:
+                guy.x -= 3.5
+                guy.y -= 3.5
+            elif guy_zero_move == 7:
+                guy.x += 3.5
+                guy.y -= 3.5
+
+    if guy.colliderect(square_door):
+        guyonbuilding = True
+        # batman.x = pass
+        batman.y = square_door.y - 331
+
+    if not guy.colliderect(square_building):
+        guyonbuilding = False
 
 
     if joker.colliderect(superman) and superman_alive == False:
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -=5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
 
     if joker.colliderect(batman) and batman_alive == False:
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -=5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
 
     if joker.colliderect(flash) and flash_alive == False:
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -=5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
 
     if joker.colliderect(guy) and guy_alive == False:
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -=5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
 
     if joker.colliderect(luthor) and luthor_alive == False:
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -=5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
 
     if joker.colliderect(two_face) and two_face_alive == False:
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -=5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
+
+    if joker.colliderect(square_building) and jokeronbuilding == False:
+        if joker_faces == 2:
+            joker.y += 5
+        elif joker_faces == 4:
+            joker.x -= 5
+        elif joker_faces == 6:
+            joker.y -=5
+        elif joker_faces == 8:
+            joker.x += 5
+
+        elif joker_faces == 1:
+            joker.x += 3.5
+            joker.y += 3.5
+        elif joker_faces == 3:
+            joker.x -= 3.5
+            joker.y += 3.5
+        elif joker_faces == 5:
+            joker.x -= 3.5
+            joker.y -= 3.5
+        elif joker_faces == 7:
+            joker.x += 3.5
+            joker.y -= 3.5
+
+        elif joker_faces == 0:
+            joker_zero_move = random.randint(1, 8)
+            if joker_zero_move == 2:
+                joker.y += 5
+            elif joker_zero_move == 4:
+                joker.x -= 5
+            elif joker_zero_move == 6:
+                joker.y -= 5
+            elif joker_zero_move == 8:
+                joker.x += 5
+
+            elif joker_zero_move == 1:
+                joker.x += 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 3:
+                joker.x -= 3.5
+                joker.y += 3.5
+            elif joker_zero_move == 5:
+                joker.x -= 3.5
+                joker.y -= 3.5
+            elif joker_zero_move == 7:
+                joker.x += 3.5
+                joker.y -= 3.5
+
+    if joker.colliderect(square_door):
+        jokeronbuilding = True
+        # batman.x = pass
+        joker.y = square_door.y - 331
+
+    if not joker.colliderect(square_building):
+        jokeronbuilding = False
 
 
     if luthor.colliderect(superman) and superman_alive == False:
         if luthor_faces == 2:
             luthor.y += 5
-        if luthor_faces == 4:
+        elif luthor_faces == 4:
             luthor.x -= 5
-        if luthor_faces == 6:
+        elif luthor_faces == 6:
             luthor.y -=5
-        if luthor_faces == 8:
+        elif luthor_faces == 8:
             luthor.x += 5
 
-        if luthor_faces == 1:
+        elif luthor_faces == 1:
             luthor.x += 3.5
             luthor.y += 3.5
-        if luthor_faces == 3:
+        elif luthor_faces == 3:
             luthor.x -= 3.5
             luthor.y += 3.5
-        if luthor_faces == 5:
+        elif luthor_faces == 5:
             luthor.x -= 3.5
             luthor.y -= 3.5
-        if luthor_faces == 7:
+        elif luthor_faces == 7:
             luthor.x += 3.5
             luthor.y -= 3.5
 
     if luthor.colliderect(batman) and batman_alive == False:
         if luthor_faces == 2:
             luthor.y += 5
-        if luthor_faces == 4:
+        elif luthor_faces == 4:
             luthor.x -= 5
-        if luthor_faces == 6:
+        elif luthor_faces == 6:
             luthor.y -=5
-        if luthor_faces == 8:
+        elif luthor_faces == 8:
             luthor.x += 5
 
-        if luthor_faces == 1:
+        elif luthor_faces == 1:
             luthor.x += 3.5
             luthor.y += 3.5
-        if luthor_faces == 3:
+        elif luthor_faces == 3:
             luthor.x -= 3.5
             luthor.y += 3.5
-        if luthor_faces == 5:
+        elif luthor_faces == 5:
             luthor.x -= 3.5
             luthor.y -= 3.5
-        if luthor_faces == 7:
+        elif luthor_faces == 7:
             luthor.x += 3.5
             luthor.y -= 3.5
     
     if luthor.colliderect(flash) and flash_alive == False:
         if luthor_faces == 2:
             luthor.y += 5
-        if luthor_faces == 4:
+        elif luthor_faces == 4:
             luthor.x -= 5
-        if luthor_faces == 6:
+        elif luthor_faces == 6:
             luthor.y -=5
-        if luthor_faces == 8:
+        elif luthor_faces == 8:
             luthor.x += 5
 
-        if luthor_faces == 1:
+        elif luthor_faces == 1:
             luthor.x += 3.5
             luthor.y += 3.5
-        if luthor_faces == 3:
+        elif luthor_faces == 3:
             luthor.x -= 3.5
             luthor.y += 3.5
-        if luthor_faces == 5:
+        elif luthor_faces == 5:
             luthor.x -= 3.5
             luthor.y -= 3.5
-        if luthor_faces == 7:
+        elif luthor_faces == 7:
             luthor.x += 3.5
             luthor.y -= 3.5
 
     if luthor.colliderect(joker) and joker_alive == False:
         if luthor_faces == 2:
             luthor.y += 5
-        if luthor_faces == 4:
+        elif luthor_faces == 4:
             luthor.x -= 5
-        if luthor_faces == 6:
+        elif luthor_faces == 6:
             luthor.y -=5
-        if luthor_faces == 8:
+        elif luthor_faces == 8:
             luthor.x += 5
 
-        if luthor_faces == 1:
+        elif luthor_faces == 1:
             luthor.x += 3.5
             luthor.y += 3.5
-        if luthor_faces == 3:
+        elif luthor_faces == 3:
             luthor.x -= 3.5
             luthor.y += 3.5
-        if luthor_faces == 5:
+        elif luthor_faces == 5:
             luthor.x -= 3.5
             luthor.y -= 3.5
-        if luthor_faces == 7:
+        elif luthor_faces == 7:
             luthor.x += 3.5
             luthor.y -= 3.5
 
     if luthor.colliderect(guy) and guy_alive == False:
         if luthor_faces == 2:
             luthor.y += 5
-        if luthor_faces == 4:
+        elif luthor_faces == 4:
             luthor.x -= 5
-        if luthor_faces == 6:
+        elif luthor_faces == 6:
             luthor.y -=5
-        if luthor_faces == 8:
+        elif luthor_faces == 8:
             luthor.x += 5
 
-        if luthor_faces == 1:
+        elif luthor_faces == 1:
             luthor.x += 3.5
             luthor.y += 3.5
-        if luthor_faces == 3:
+        elif luthor_faces == 3:
             luthor.x -= 3.5
             luthor.y += 3.5
-        if luthor_faces == 5:
+        elif luthor_faces == 5:
             luthor.x -= 3.5
             luthor.y -= 3.5
-        if luthor_faces == 7:
+        elif luthor_faces == 7:
             luthor.x += 3.5
             luthor.y -= 3.5 
 
     if luthor.colliderect(two_face) and two_face_alive == False:
         if luthor_faces == 2:
             luthor.y += 5
-        if luthor_faces == 4:
+        elif luthor_faces == 4:
             luthor.x -= 5
-        if luthor_faces == 6:
+        elif luthor_faces == 6:
             luthor.y -=5
-        if luthor_faces == 8:
+        elif luthor_faces == 8:
             luthor.x += 5
 
-        if luthor_faces == 1:
+        elif luthor_faces == 1:
             luthor.x += 3.5
             luthor.y += 3.5
-        if luthor_faces == 3:
+        elif luthor_faces == 3:
             luthor.x -= 3.5
             luthor.y += 3.5
-        if luthor_faces == 5:
+        elif luthor_faces == 5:
             luthor.x -= 3.5
             luthor.y -= 3.5
-        if luthor_faces == 7:
+        elif luthor_faces == 7:
             luthor.x += 3.5
-            luthor.y -= 3.5   
+            luthor.y -= 3.5
+
+    if luthor.colliderect(square_building) and luthoronbuilding == False:
+        if luthor_faces == 2:
+            luthor.y += 5
+        elif luthor_faces == 4:
+            luthor.x -= 5
+        elif luthor_faces == 6:
+            luthor.y -=5
+        elif luthor_faces == 8:
+            luthor.x += 5
+
+        elif luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        elif luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        elif luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        elif luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+
+        elif luthor_faces == 0:
+            luthor_zero_move = random.randint(1, 8)
+            if luthor_zero_move == 2:
+                luthor.y += 5
+            elif luthor_zero_move == 4:
+                luthor.x -= 5
+            elif luthor_zero_move == 6:
+                luthor.y -= 5
+            elif luthor_zero_move == 8:
+                luthor.x += 5
+
+            elif luthor_zero_move == 1:
+                luthor.x += 3.5
+                luthor.y += 3.5
+            elif luthor_zero_move == 3:
+                luthor.x -= 3.5
+                luthor.y += 3.5
+            elif luthor_zero_move == 5:
+                luthor.x -= 3.5
+                luthor.y -= 3.5
+            elif luthor_zero_move == 7:
+                luthor.x += 3.5
+                luthor.y -= 3.5
+
+    if luthor.colliderect(square_door):
+        luthoronbuilding = True
+        # batman.x = pass
+        luthor.y = square_door.y - 331
+
+    if not luthor.colliderect(square_building):
+        luthoronbuilding = False
 
 
-    if doomsday.colliderect(superman) and doomsday_faces != 0:
+    if doomsday.colliderect(superman) and doomsday_faces != 0 and (doomsday_jump == False or superman_caught == True):
         if doomsday_faces == 2:
             superman.y -= 5
-        if doomsday_faces == 4:
+        elif doomsday_faces == 4:
             superman.x += 5
-        if doomsday_faces == 6:
+        elif doomsday_faces == 6:
             superman.y += 5
-        if doomsday_faces == 8:
+        elif doomsday_faces == 8:
             superman.x -= 5
 
-        if doomsday_faces == 1:
+        elif doomsday_faces == 1:
             superman.x -= 3.5
             superman.y -= 3.5
-        if doomsday_faces == 3:
+        elif doomsday_faces == 3:
             superman.x += 3.5
             superman.y -= 3.5
-        if doomsday_faces == 5:
+        elif doomsday_faces == 5:
             superman.x += 3.5
             superman.y += 3.5
-        if doomsday_faces == 7:
+        elif doomsday_faces == 7:
             superman.x -= 3.5
             superman.y += 3.5
-    elif doomsday.colliderect(superman) and doomsday_faces == 0:
+    elif doomsday.colliderect(superman) and doomsday_faces == 0 and (doomsday_jump == False or superman_caught == True):
         if superman_faces == 2:
             superman.y += 5
-        if superman_faces == 4:
+        elif superman_faces == 4:
             superman.x -= 5
-        if superman_faces == 6:
+        elif superman_faces == 6:
             superman.y -= 5
-        if superman_faces == 8:
+        elif superman_faces == 8:
             superman.x += 5
 
-        if superman_faces == 1:
+        elif superman_faces == 1:
             superman.x += 3.5
             superman.y += 3.5
-        if superman_faces == 3:
+        elif superman_faces == 3:
             superman.x -= 3.5
             superman.y += 3.5
-        if superman_faces == 5:
+        elif superman_faces == 5:
             superman.x -= 3.5
             superman.y -= 3.5
-        if superman_faces == 7:
+        elif superman_faces == 7:
             superman.x += 3.5
             superman.y -= 3.5
 
-    if doomsday.colliderect(batman) and doomsday_faces != 0:
+    if doomsday.colliderect(batman) and doomsday_faces != 0 and (doomsday_jump == False or batman_caught == True):
         if doomsday_faces == 2:
             batman.y -= 5
-        if doomsday_faces == 4:
+        elif doomsday_faces == 4:
             batman.x += 5
-        if doomsday_faces == 6:
+        elif doomsday_faces == 6:
             batman.y += 5
-        if doomsday_faces == 8:
+        elif doomsday_faces == 8:
             batman.x -= 5
 
-        if doomsday_faces == 1:
+        elif doomsday_faces == 1:
             batman.x -= 3.5
             batman.y -= 3.5
-        if doomsday_faces == 3:
+        elif doomsday_faces == 3:
             batman.x += 3.5
             batman.y -= 3.5
-        if doomsday_faces == 5:
+        elif doomsday_faces == 5:
             batman.x += 3.5
             batman.y += 3.5
-        if doomsday_faces == 7:
+        elif doomsday_faces == 7:
             batman.x -= 3.5
             batman.y += 3.5
-    elif doomsday.colliderect(batman) and doomsday_faces == 0:
+    elif doomsday.colliderect(batman) and doomsday_faces == 0 and (doomsday_jump == False or batman_caught == True):
         if batman_faces == 2:
             batman.y += 5
-        if batman_faces == 4:
+        elif batman_faces == 4:
             batman.x -= 5
-        if batman_faces == 6:
+        elif batman_faces == 6:
             batman.y -= 5
-        if batman_faces == 8:
+        elif batman_faces == 8:
             batman.x += 5
         
-        if batman_faces == 1:
+        elif batman_faces == 1:
             batman.x += 3.5
             batman.y += 3.5
-        if batman_faces == 3:
+        elif batman_faces == 3:
             batman.x -= 3.5
             batman.y += 3.5
-        if batman_faces == 5:
+        elif batman_faces == 5:
             batman.x -= 3.5
             batman.y -= 3.5
-        if batman_faces == 7:
+        elif batman_faces == 7:
             batman.x += 3.5
             batman.y -= 3.5
     
-    if doomsday.colliderect(flash) and doomsday_faces != 0:
+    if doomsday.colliderect(flash) and doomsday_faces != 0 and (doomsday_jump == False or flash_caught == True):
         if doomsday_faces == 2:
             flash.y -= 5
-        if doomsday_faces == 4:
+        elif doomsday_faces == 4:
             flash.x += 5
-        if doomsday_faces == 6:
+        elif doomsday_faces == 6:
             flash.y += 5
-        if doomsday_faces == 8:
+        elif doomsday_faces == 8:
             flash.x -= 5
 
-        if doomsday_faces == 1:
+        elif doomsday_faces == 1:
             flash.x -= 3.5
             flash.y -= 3.5
-        if doomsday_faces == 3:
+        elif doomsday_faces == 3:
             flash.x += 3.5
             flash.y -= 3.5
-        if doomsday_faces == 5:
+        elif doomsday_faces == 5:
             flash.x += 3.5
             flash.y += 3.5
-        if doomsday_faces == 7:
+        elif doomsday_faces == 7:
             flash.x -= 3.5
             flash.y += 3.5
-    elif doomsday.colliderect(flash) and doomsday_faces == 0:
+    elif doomsday.colliderect(flash) and doomsday_faces == 0 and (doomsday_jump == False or flash == True):
         if flash_faces == 2:
             flash.y += 5.5
-        if flash_faces == 4:
+        elif flash_faces == 4:
             flash.x -= 5.5
-        if flash_faces == 6:
+        elif flash_faces == 6:
             flash.y -= 5.5
-        if flash_faces == 8:
+        elif flash_faces == 8:
             flash.x += 5.5
 
-        if flash_faces == 1:
+        elif flash_faces == 1:
             flash.x += 4
             flash.y += 4
-        if flash_faces == 3:
+        elif flash_faces == 3:
             flash.x -= 4
             flash.y += 4
-        if flash_faces == 5:
+        elif flash_faces == 5:
             flash.x -= 4
             flash.y -= 4
-        if flash_faces == 7:
+        elif flash_faces == 7:
             flash.x += 4
             flash.y -= 4
 
-    if doomsday.colliderect(joker) and doomsday_faces != 0:
+    if doomsday.colliderect(joker) and doomsday_faces != 0 and (doomsday_jump == False or joker_caught == True):
         if doomsday_faces == 2:
             joker.y -= 5
-        if doomsday_faces == 4:
+        elif doomsday_faces == 4:
             joker.x += 5
-        if doomsday_faces == 6:
+        elif doomsday_faces == 6:
             joker.y += 5
-        if doomsday_faces == 8:
+        elif doomsday_faces == 8:
             joker.x -= 5
 
-        if doomsday_faces == 1:
+        elif doomsday_faces == 1:
             joker.x -= 3.5
             joker.y -= 3.5
-        if doomsday_faces == 3:
+        elif doomsday_faces == 3:
             joker.x += 3.5
             joker.y -= 3.5
-        if doomsday_faces == 5:
+        elif doomsday_faces == 5:
             joker.x += 3.5
             joker.y += 3.5
-        if doomsday_faces == 7:
+        elif doomsday_faces == 7:
             joker.x -= 3.5
             joker.y += 3.5
-    elif doomsday.colliderect(joker) and doomsday_faces == 0:
+    elif doomsday.colliderect(joker) and doomsday_faces == 0 and (doomsday_jump == False or joker_caught == True):
         if joker_faces == 2:
             joker.y += 5
-        if joker_faces == 4:
+        elif joker_faces == 4:
             joker.x -= 5
-        if joker_faces == 6:
+        elif joker_faces == 6:
             joker.y -= 5
-        if joker_faces == 8:
+        elif joker_faces == 8:
             joker.x += 5
 
-        if joker_faces == 1:
+        elif joker_faces == 1:
             joker.x += 3.5
             joker.y += 3.5
-        if joker_faces == 3:
+        elif joker_faces == 3:
             joker.x -= 3.5
             joker.y += 3.5
-        if joker_faces == 5:
+        elif joker_faces == 5:
             joker.x -= 3.5
             joker.y -= 3.5
-        if joker_faces == 7:
+        elif joker_faces == 7:
             joker.x += 3.5
             joker.y -= 3.5
 
-    if doomsday.colliderect(guy) and doomsday_faces != 0:
+    if doomsday.colliderect(guy) and doomsday_faces != 0 and (doomsday_jump == False or guy_caught == True):
         if doomsday_faces == 2:
             guy.y -= 5
-        if doomsday_faces == 4:
+        elif doomsday_faces == 4:
             guy.x += 5
-        if doomsday_faces == 6:
+        elif doomsday_faces == 6:
             guy.y += 5
-        if doomsday_faces == 8:
+        elif doomsday_faces == 8:
             guy.x -= 5
 
-        if doomsday_faces == 1:
+        elif doomsday_faces == 1:
             guy.x -= 3.5
             guy.y -= 3.5
-        if doomsday_faces == 3:
+        elif doomsday_faces == 3:
             guy.x += 3.5
             guy.y -= 3.5
-        if doomsday_faces == 5:
+        elif doomsday_faces == 5:
             guy.x += 3.5
             guy.y += 3.5
-        if doomsday_faces == 7:
+        elif doomsday_faces == 7:
             guy.x -= 3.5
             guy.y += 3.5
-    elif doomsday.colliderect(guy) and doomsday_faces == 0:
+    elif doomsday.colliderect(guy) and doomsday_faces == 0 and (doomsday_jump == False or guy_caught == True):
         if guy_faces == 2:
             guy.y += 5
-        if guy_faces == 4:
+        elif guy_faces == 4:
             guy.x -= 5
-        if guy_faces == 6:
+        elif guy_faces == 6:
             guy.y -= 5
-        if guy_faces == 8:
+        elif guy_faces == 8:
             guy.x += 5
 
-        if guy_faces == 1:
+        elif guy_faces == 1:
             guy.x += 3.5
             guy.y += 3.5
-        if guy_faces == 3:
+        elif guy_faces == 3:
             guy.x -= 3.5
             guy.y += 3.5
-        if guy_faces == 5:
+        elif guy_faces == 5:
             guy.x -= 3.5
             guy.y -= 3.5
-        if guy_faces == 7:
+        elif guy_faces == 7:
             guy.x += 3.5
             guy.y -= 3.5
 
-    if doomsday.colliderect(two_face) and doomsday_faces != 0:
+    if doomsday.colliderect(luthor) and doomsday_faces != 0 and (doomsday_jump == False or luthor_caught == True):
+        if doomsday_faces == 2:
+            luthor.y -= 5
+        elif doomsday_faces == 4:
+            luthor.x += 5
+        elif doomsday_faces == 6:
+            luthor.y += 5
+        elif doomsday_faces == 8:
+            luthor.x -= 5
+
+        elif doomsday_faces == 1:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        elif doomsday_faces == 3:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+        elif doomsday_faces == 5:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        elif doomsday_faces == 7:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+    elif doomsday.colliderect(luthor) and doomsday_faces == 0 and (doomsday_jump == False or luthor_caught == True):
+        if luthor_faces == 2:
+            luthor.y += 5
+        elif luthor_faces == 4:
+            luthor.x -= 5
+        elif luthor_faces == 6:
+            luthor.y -= 5
+        elif luthor_faces == 8:
+            luthor.x += 5
+
+        elif luthor_faces == 1:
+            luthor.x += 3.5
+            luthor.y += 3.5
+        elif luthor_faces == 3:
+            luthor.x -= 3.5
+            luthor.y += 3.5
+        elif luthor_faces == 5:
+            luthor.x -= 3.5
+            luthor.y -= 3.5
+        elif luthor_faces == 7:
+            luthor.x += 3.5
+            luthor.y -= 3.5
+
+    if doomsday.colliderect(two_face) and doomsday_faces != 0 and (doomsday_jump == False or two_face_caught == True):
         if doomsday_faces == 2:
             two_face.y -= 5
-        if doomsday_faces == 4:
+        elif doomsday_faces == 4:
             two_face.x += 5
-        if doomsday_faces == 6:
+        elif doomsday_faces == 6:
             two_face.y += 5
-        if doomsday_faces == 8:
+        elif doomsday_faces == 8:
             two_face.x -= 5
 
-        if doomsday_faces == 1:
+        elif doomsday_faces == 1:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if doomsday_faces == 3:
+        elif doomsday_faces == 3:
             two_face.x += 3.5
             two_face.y -= 3.5
-        if doomsday_faces == 5:
+        elif doomsday_faces == 5:
             two_face.x += 3.5
             two_face.y += 3.5
-        if doomsday_faces == 7:
+        elif doomsday_faces == 7:
             guy.x -= 3.5
             guy.y += 3.5
-    elif doomsday.colliderect(guy) and doomsday_faces == 0:
+    elif doomsday.colliderect(guy) and doomsday_faces == 0 and (doomsday_jump == False or two_face_caught == True):
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -= 5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
             two_face.y -= 3.5
+
+    if doomsday.colliderect(square_building) and doomsdayonbuilding == False and doomsday_jump == False:
+        if doomsday_faces == 2:
+            doomsday.y += 5
+        elif doomsday_faces == 4:
+            doomsday.x -= 5
+        elif doomsday_faces == 6:
+            doomsday.y -= 5
+        elif doomsday_faces == 8:
+            doomsday.x += 5
+
+        elif doomsday_faces == 1:
+            doomsday.x += 3.5
+            doomsday.y += 3.5
+        elif doomsday_faces == 3:
+            doomsday.x -= 3.5
+            doomsday.y += 3.5
+        elif doomsday_faces == 5:
+            doomsday.x -= 3.5
+            doomsday.y -= 3.5
+        elif doomsday_faces == 7:
+            doomsday.x += 3.5
+            doomsday.y -= 3.5
+        doomsdayonbuilding = False
+
+    if not doomsday.colliderect(square_building):
+        doomsdayonbuilding = False
+
+    if doomsday.colliderect(square_building) and doomsday.y <= 526 and doomsday_jump == True and doomsdayonbuilding == False:
+        doomsdayonbuilding = True
+        doomsday_jump = False
+        doomsday = Actor("doomsdaynear")
+        doomsday.pos = doomsday_position
 
 
     if two_face.colliderect(superman) and superman_alive == False:
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -=5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
             two_face.y -= 3.5
 
     if two_face.colliderect(batman) and batman_alive == False:
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -=5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
             two_face.y -= 3.5
     
     if two_face.colliderect(flash) and flash_alive == False:
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -=5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
             two_face.y -= 3.5
 
     if two_face.colliderect(joker) and joker_alive == False:
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -=5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
             two_face.y -= 3.5
 
     if two_face.colliderect(guy) and guy_alive == False:
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -=5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
             two_face.y -= 3.5 
 
     if two_face.colliderect(luthor) and luthor_alive == False:
         if two_face_faces == 2:
             two_face.y += 5
-        if two_face_faces == 4:
+        elif two_face_faces == 4:
             two_face.x -= 5
-        if two_face_faces == 6:
+        elif two_face_faces == 6:
             two_face.y -=5
-        if two_face_faces == 8:
+        elif two_face_faces == 8:
             two_face.x += 5
 
-        if two_face_faces == 1:
+        elif two_face_faces == 1:
             two_face.x += 3.5
             two_face.y += 3.5
-        if two_face_faces == 3:
+        elif two_face_faces == 3:
             two_face.x -= 3.5
             two_face.y += 3.5
-        if two_face_faces == 5:
+        elif two_face_faces == 5:
             two_face.x -= 3.5
             two_face.y -= 3.5
-        if two_face_faces == 7:
+        elif two_face_faces == 7:
             two_face.x += 3.5
-            two_face.y -= 3.5   
+            two_face.y -= 3.5
+
+    if two_face.colliderect(square_building) and two_faceonbuilding == False:
+        if two_face_faces == 2:
+            two_face.y += 5
+        elif two_face_faces == 4:
+            two_face.x -= 5
+        elif two_face_faces == 6:
+            two_face.y -=5
+        elif two_face_faces == 8:
+            two_face.x += 5
+
+        elif two_face_faces == 1:
+            two_face.x += 3.5
+            two_face.y += 3.5
+        elif two_face_faces == 3:
+            two_face.x -= 3.5
+            two_face.y += 3.5
+        elif two_face_faces == 5:
+            two_face.x -= 3.5
+            two_face.y -= 3.5
+        elif two_face_faces == 7:
+            two_face.x += 3.5
+            two_face.y -= 3.5
+
+        elif two_face_faces == 0:
+            two_face_zero_move = random.randint(1, 8)
+            if two_face_zero_move == 2:
+                two_face.y += 5
+            elif two_face_zero_move == 4:
+                two_face.x -= 5
+            elif two_face_zero_move == 6:
+                two_face.y -= 5
+            elif two_face_zero_move == 8:
+                two_face.x += 5
+
+            elif two_face_zero_move == 1:
+                two_face.x += 3.5
+                two_face.y += 3.5
+            elif two_face_zero_move == 3:
+                two_face.x -= 3.5
+                two_face.y += 3.5
+            elif two_face_zero_move == 5:
+                two_face.x -= 3.5
+                two_face.y -= 3.5
+            elif two_face_zero_move == 7:
+                two_face.x += 3.5
+                two_face.y -= 3.5
+
+    if two_face.colliderect(square_door):
+        two_faceonbuilding = True
+        # batman.x = pass
+        two_face.y = square_door.y - 331
+
+    if not two_face.colliderect(square_building):
+        two_faceonbuilding = False
 
 
     superman_bleed_count += 1

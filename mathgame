@@ -1,0 +1,906 @@
+import pgzrun
+import time
+import random
+import math
+import pygame
+
+
+WIDTH = 960
+HEIGHT = 540
+
+
+isfirstturn = True
+turn = 1
+
+
+blue_turns_taken = 0
+red_turns_taken = 0
+blue_roads = 0
+red_roads = 0
+
+
+NUMBER_WORDS = {
+    1: "one", 2: "two", 3: "three", 4: "four", 5: "five",
+    6: "six", 7: "seven", 8: "eight", 9: "nine", 10: "ten",
+    11: "eleven", 12: "twelve", 13: "thirteen", 14: "fourteen",
+    15: "fifteen", 16: "sixteen", 17: "seventeen", }
+
+
+ROWS = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
+
+
+five_a = Rect(80, 0, 20, 20)
+five_a_color = "black"
+seven_a = Rect(120, 0, 20, 20)
+seven_a_color = "black"
+nine_a = Rect(160, 0, 20, 20)
+nine_a_color = "black"
+eleven_a = Rect(200, 0, 20, 20)
+eleven_a_color = "black"
+thirteen_a = Rect(240, 0, 20, 20)
+thirteen_a_color = "black"
+
+
+four_b = Rect(60, 20, 20, 20)
+four_b_color = "black"
+six_b = Rect(100, 20, 20, 20)
+six_b_color = "black"
+eight_b = Rect(140, 20, 20, 20)
+eight_b_color = "black"
+ten_b = Rect(180, 20, 20, 20)
+ten_b_color = "black"
+twelve_b = Rect(220, 20, 20, 20)
+twelve_b_color = "black"
+fourteen_b = Rect(260, 20, 20, 20)
+fourteen_b_color = "black"
+
+
+three_c = Rect(40, 40, 20, 20)
+three_c_color = "black"
+five_c = Rect(80, 40, 20, 20)
+five_c_color = "black"
+seven_c = Rect(120, 40, 20, 20)
+seven_c_color = "black"
+nine_c = Rect(160, 40, 20, 20)
+nine_c_color = "black"
+eleven_c = Rect(200, 40, 20, 20)
+eleven_c_color = "black"
+thirteen_c = Rect(240, 40, 20, 20)
+thirteen_c_color = "black"
+fifteen_c = Rect(280, 40, 20, 20)
+fifteen_c_color = "black"
+
+
+two_d = Rect(20, 60, 20, 20)
+two_d_color = "black"  
+four_d = Rect(60, 60, 20, 20)
+four_d_color = "black"
+six_d = Rect(100, 60, 20, 20)
+six_d_color = "black"
+eight_d = Rect(140, 60, 20, 20)
+eight_d_color = "black"
+ten_d = Rect(180, 60, 20, 20)
+ten_d_color = "black"
+twelve_d = Rect(220, 60, 20, 20)
+twelve_d_color = "black"
+fourteen_d = Rect(260, 60, 20, 20)
+fourteen_d_color = "black"
+sixteen_d = Rect(300, 60, 20, 20)
+sixteen_d_color = "black"
+
+
+one_e = Rect(0, 80, 20, 20)
+one_e_color = "black"
+three_e = Rect(40, 80, 20, 20)
+three_e_color = "black"
+five_e = Rect(80, 80, 20, 20)
+five_e_color = "black"
+seven_e = Rect(120, 80, 20, 20)
+seven_e_color = "black"
+nine_e = Rect(160, 80, 20, 20)
+nine_e_color = "black"
+eleven_e = Rect(200, 80, 20, 20)
+eleven_e_color = "black"
+thirteen_e = Rect(240, 80, 20, 20)
+thirteen_e_color = "black"
+fifteen_e = Rect(280, 80, 20, 20)
+fifteen_e_color = "black"
+seventeen_e = Rect(320, 80, 20, 20)
+seventeen_e_color = "black"
+
+
+two_f = Rect(20, 100, 20, 20)
+two_f_color = "black"
+four_f = Rect(60, 100, 20, 20)
+four_f_color = "black"
+six_f = Rect(100, 100, 20, 20)
+six_f_color = "black"
+eight_f = Rect(140, 100, 20, 20)
+eight_f_color = "black"
+ten_f = Rect(180, 100, 20, 20)
+ten_f_color = "black"
+twelve_f = Rect(220, 100, 20, 20)
+twelve_f_color = "black"
+fourteen_f = Rect(260, 100, 20, 20)
+fourteen_f_color = "black"
+sixteen_f = Rect(300, 100, 20, 20)
+sixteen_f_color = "black"
+
+
+three_g = Rect(40, 120, 20, 20)
+three_g_color = "black"
+five_g = Rect(80, 120, 20, 20)
+five_g_color = "black"
+seven_g = Rect(120, 120, 20, 20)
+seven_g_color = "black"
+nine_g = Rect(160, 120, 20, 20)
+nine_g_color = "black"
+eleven_g = Rect(200, 120, 20, 20)
+eleven_g_color = "black"
+thirteen_g = Rect(240, 120, 20, 20)
+thirteen_g_color = "black"
+fifteen_g = Rect(280, 120, 20, 20)
+fifteen_g_color = "black"
+
+
+four_h = Rect(60, 140, 20, 20)
+four_h_color = "black"
+six_h = Rect(100, 140, 20, 20)
+six_h_color = "black"
+eight_h = Rect(140, 140, 20, 20)
+eight_h_color = "black"
+ten_h = Rect(180, 140, 20, 20)
+ten_h_color = "black"
+twelve_h = Rect(220, 140, 20, 20)
+twelve_h_color = "black"
+fourteen_h = Rect(260, 140, 20, 20)
+fourteen_h_color = "black"
+
+
+five_i = Rect(80, 160, 20, 20)
+five_i_color = "black"
+seven_i = Rect(120, 160, 20, 20)
+seven_i_color = "black"
+nine_i = Rect(160, 160, 20, 20)
+nine_i_color = "black"
+eleven_i = Rect(200, 160, 20, 20)
+eleven_i_color = "black"
+thirteen_i = Rect(240, 160, 20, 20)
+thirteen_i_color = "black"
+
+
+subject = five_a
+
+
+def draw():
+    screen.fill("white")
+
+    screen.draw.text(str(subject), (0, 480), color="black", fontsize=15)
+    screen.draw.text("Blue: " + str(blue_roads), (0, 500), color="black", fontsize=15)
+    screen.draw.text("Red: " + str(red_roads), (0, 520), color="black", fontsize=15)
+
+    screen.draw.filled_rect(five_a, five_a_color)
+    screen.draw.filled_rect(seven_a, seven_a_color)
+    screen.draw.filled_rect(nine_a, nine_a_color)
+    screen.draw.filled_rect(eleven_a, eleven_a_color)
+    screen.draw.filled_rect(thirteen_a, thirteen_a_color)
+
+
+    screen.draw.filled_rect(four_b, four_b_color)
+    screen.draw.filled_rect(six_b, six_b_color )
+    screen.draw.filled_rect(eight_b, eight_b_color)
+    screen.draw.filled_rect(ten_b, ten_b_color)
+    screen.draw.filled_rect(twelve_b, twelve_b_color)
+    screen.draw.filled_rect(fourteen_b, fourteen_b_color)
+
+
+    screen.draw.filled_rect(three_c, three_c_color)
+    screen.draw.filled_rect(five_c, five_c_color)
+    screen.draw.filled_rect(seven_c, seven_c_color)
+    screen.draw.filled_rect(nine_c, nine_c_color)
+    screen.draw.filled_rect(eleven_c, eleven_c_color)
+    screen.draw.filled_rect(thirteen_c, thirteen_c_color)
+    screen.draw.filled_rect(fifteen_c, fifteen_c_color)
+
+
+    screen.draw.filled_rect(two_d, two_d_color)
+    screen.draw.filled_rect(four_d, four_d_color)
+    screen.draw.filled_rect(six_d, six_d_color)
+    screen.draw.filled_rect(eight_d, eight_d_color)
+    screen.draw.filled_rect(ten_d, ten_d_color)
+    screen.draw.filled_rect(twelve_d, twelve_d_color)
+    screen.draw.filled_rect(fourteen_d, fourteen_d_color)
+    screen.draw.filled_rect(sixteen_d, sixteen_d_color)
+
+
+    screen.draw.filled_rect(one_e, one_e_color)
+    screen.draw.filled_rect(three_e, three_e_color)
+    screen.draw.filled_rect(five_e, five_e_color)
+    screen.draw.filled_rect(seven_e, seven_e_color)
+    screen.draw.filled_rect(nine_e, nine_e_color)
+    screen.draw.filled_rect(eleven_e, eleven_e_color)
+    screen.draw.filled_rect(thirteen_e, thirteen_e_color)
+    screen.draw.filled_rect(fifteen_e, fifteen_e_color)
+    screen.draw.filled_rect(seventeen_e, seventeen_e_color)
+
+
+    screen.draw.filled_rect(two_f, two_f_color)
+    screen.draw.filled_rect(four_f, four_f_color)
+    screen.draw.filled_rect(six_f, six_f_color)
+    screen.draw.filled_rect(eight_f, eight_f_color)
+    screen.draw.filled_rect(ten_f, ten_f_color)
+    screen.draw.filled_rect(twelve_f, twelve_f_color)
+    screen.draw.filled_rect(fourteen_f, fourteen_f_color)
+    screen.draw.filled_rect(sixteen_f, sixteen_f_color)
+
+
+    screen.draw.filled_rect(three_g, three_g_color )
+    screen.draw.filled_rect(five_g, five_g_color)
+    screen.draw.filled_rect(seven_g, seven_g_color)
+    screen.draw.filled_rect(nine_g, nine_g_color)
+    screen.draw.filled_rect(eleven_g, eleven_g_color)
+    screen.draw.filled_rect(thirteen_g, thirteen_g_color)
+    screen.draw.filled_rect(fifteen_g, fifteen_g_color)
+
+
+    screen.draw.filled_rect(four_h, four_h_color)
+    screen.draw.filled_rect(six_h, six_h_color)
+    screen.draw.filled_rect(eight_h, eight_h_color)
+    screen.draw.filled_rect(ten_h, ten_h_color)
+    screen.draw.filled_rect(twelve_h, twelve_h_color)
+    screen.draw.filled_rect(fourteen_h, fourteen_h_color)
+
+
+    screen.draw.filled_rect(five_i, five_i_color)
+    screen.draw.filled_rect(seven_i, seven_i_color)
+    screen.draw.filled_rect(nine_i, nine_i_color)
+    screen.draw.filled_rect(eleven_i, eleven_i_color)
+    screen.draw.filled_rect(thirteen_i, thirteen_i_color)
+
+    draw_connections()
+
+
+def on_mouse_down(pos):
+    global five_a, five_a_color, seven_a, seven_a_color, nine_a, nine_a_color, eleven_a, eleven_a_color, thirteen_a, thirteen_a_color, four_b, four_b_color, six_b, six_b_color, eight_b, eight_b_color, ten_b, ten_b_color, twelve_b, twelve_b_color, fourteen_b, fourteen_b_color, three_c, three_c_color, five_c, five_c_color, seven_c, seven_c_color, nine_c, nine_c_color, eleven_c, eleven_c_color, thirteen_c, thirteen_c_color, fifteen_c, fifteen_c_color, two_d, two_d_color, four_d, four_d_color, six_d, six_d_color, eight_d, eight_d_color, ten_d, ten_d_color, twelve_d, twelve_d_color, fourteen_d, fourteen_d_color, sixteen_d, sixteen_d_color, one_e, one_e_color, three_e, three_e_color, five_e, five_e_color, seven_e, seven_e_color, nine_e, nine_e_color, eleven_e, eleven_e_color, thirteen_e \
+    , thirteen_e_color, fifteen_e, fifteen_e_color, seventeen_e, seventeen_e_color, two_f, two_f_color, four_f \
+    , four_f_color, six_f, six_f_color, eight_f, eight_f_color, ten_f, ten_f_color, twelve_f, twelve_f_color, fourteen_f \
+    , fourteen_f_color, sixteen_f, sixteen_f_color, three_g, three_g_color, five_g, five_g_color, seven_g, seven_g_color \
+    , nine_g, nine_g_color, eleven_g, eleven_g_color, thirteen_g, thirteen_g_color, fifteen_g, fifteen_g_color, four_h \
+    , four_h_color, six_h, six_h_color, eight_h, eight_h_color, ten_h, ten_h_color, twelve_h, twelve_h_color, fourteen_h \
+    , fourteen_h_color, five_i, five_i_color, seven_i, seven_i_color, nine_i, nine_i_color, eleven_i, eleven_i_color \
+    , thirteen_i, thirteen_i_color, turn, subject, blue_turns_taken, red_turns_taken, blue_roads, red_roads
+
+    previous_subject = subject
+
+    if turn == 1:
+       
+        if five_a.collidepoint(pos) and five_a_color == "black":
+            five_a_color = "blue"
+            turn = 2
+            subject = five_a
+        elif seven_a.collidepoint(pos) and seven_a_color == "black":
+            seven_a_color = "blue"
+            turn = 2
+            subject = seven_a
+        elif nine_a.collidepoint(pos) and nine_a_color == "black":
+            nine_a_color = "blue"
+            turn = 2
+            subject = nine_a
+        elif eleven_a.collidepoint(pos) and eleven_a_color == "black":
+            eleven_a_color = "blue"
+            turn = 2
+            subject = eleven_a
+        elif thirteen_a.collidepoint(pos) and thirteen_a_color == "black":
+            thirteen_a_color = "blue"
+            turn = 2
+            subject = thirteen_a
+        elif four_b.collidepoint(pos) and four_b_color == "black":
+            four_b_color = "blue"
+            turn = 2
+            subject = four_b
+        elif six_b.collidepoint(pos) and six_b_color == "black":
+            six_b_color = "blue"
+            turn = 2
+            subject = six_b
+        elif eight_b.collidepoint(pos) and eight_b_color == "black":
+            eight_b_color = "blue"
+            turn = 2
+            subject = eight_b
+        elif ten_b.collidepoint(pos) and ten_b_color == "black":
+            ten_b_color = "blue"
+            turn = 2
+            subject = ten_b
+        elif twelve_b.collidepoint(pos) and twelve_b_color == "black":
+            twelve_b_color = "blue"
+            turn = 2
+            subject = twelve_b
+        elif fourteen_b.collidepoint(pos) and fourteen_b_color == "black":
+            fourteen_b_color = "blue"
+            turn = 2
+            subject = fourteen_b
+        elif three_c.collidepoint(pos) and three_c_color == "black":
+            three_c_color = "blue"
+            turn = 2
+            subject = three_c
+        elif five_c.collidepoint(pos) and five_c_color == "black":
+            five_c_color = "blue"
+            turn = 2
+            subject = five_c
+        elif seven_c.collidepoint(pos) and seven_c_color == "black":
+            seven_c_color = "blue"
+            turn = 2
+            subject = seven_c
+        elif nine_c.collidepoint(pos) and nine_c_color == "black":
+            nine_c_color = "blue"
+            turn = 2
+            subject = nine_c
+        elif eleven_c.collidepoint(pos) and eleven_c_color == "black":
+            eleven_c_color = "blue"
+            turn = 2
+            subject = eleven_c
+        elif thirteen_c.collidepoint(pos) and thirteen_c_color == "black":
+            thirteen_c_color = "blue"
+            turn = 2
+            subject = thirteen_c
+        elif fifteen_c.collidepoint(pos) and fifteen_c_color == "black":
+            fifteen_c_color = "blue"
+            turn = 2
+            subject = fifteen_c
+        elif two_d.collidepoint(pos) and two_d_color == "black":
+            two_d_color = "blue"
+            turn = 2
+            subject = two_d
+        elif four_d.collidepoint(pos) and four_d_color == "black":
+            four_d_color = "blue"
+            turn = 2
+            subject = four_d
+        elif six_d.collidepoint(pos) and six_d_color == "black":
+            six_d_color = "blue"
+            turn = 2
+            subject = six_d
+        elif eight_d.collidepoint(pos) and eight_d_color == "black":
+            eight_d_color = "blue"
+            turn = 2
+            subject = eight_d
+        elif ten_d.collidepoint(pos) and ten_d_color == "black":
+            ten_d_color = "blue"
+            turn = 2
+            subject = ten_d
+        elif twelve_d.collidepoint(pos) and twelve_d_color == "black":
+            twelve_d_color = "blue"
+            turn = 2
+            subject = twelve_d
+        elif fourteen_d.collidepoint(pos) and fourteen_d_color == "black":
+            fourteen_d_color = "blue"
+            turn = 2
+            subject = fourteen_d
+        elif sixteen_d.collidepoint(pos) and sixteen_d_color == "black":
+            sixteen_d_color = "blue"
+            turn = 2
+            subject = sixteen_d
+        elif one_e.collidepoint(pos) and one_e_color == "black":
+            one_e_color = "blue"
+            turn = 2
+            subject = one_e
+        elif three_e.collidepoint(pos) and three_e_color == "black":
+            three_e_color = "blue"
+            turn = 2
+            subject = three_e
+        elif five_e.collidepoint(pos) and five_e_color == "black":
+            five_e_color = "blue"
+            turn = 2
+            subject = five_e
+        elif seven_e.collidepoint(pos) and seven_e_color == "black":
+            seven_e_color = "blue"
+            turn = 2
+            subject = seven_e
+        elif nine_e.collidepoint(pos) and nine_e_color == "black":
+            nine_e_color = "blue"
+            turn = 2
+            subject = nine_e
+        elif eleven_e.collidepoint(pos) and eleven_e_color == "black":
+            eleven_e_color = "blue"
+            turn = 2
+            subject = eleven_e
+        elif thirteen_e.collidepoint(pos) and thirteen_e_color == "black":
+            thirteen_e_color = "blue"
+            turn = 2
+            subject = thirteen_e
+        elif fifteen_e.collidepoint(pos) and fifteen_e_color == "black":
+            fifteen_e_color = "blue"
+            turn = 2
+            subject = fifteen_e
+        elif seventeen_e.collidepoint(pos) and seventeen_e_color == "black":
+            seventeen_e_color = "blue"
+            turn = 2
+            subject = seventeen_e
+        elif two_f.collidepoint(pos) and two_f_color == "black":
+            two_f_color = "blue"
+            turn = 2
+            subject = two_f
+        elif four_f.collidepoint(pos) and four_f_color == "black":
+            four_f_color = "blue"
+            turn = 2
+            subject = four_f
+        elif six_f.collidepoint(pos) and six_f_color == "black":
+            six_f_color = "blue"
+            turn = 2
+            subject = six_f
+        elif eight_f.collidepoint(pos) and eight_f_color == "black":
+            eight_f_color = "blue"
+            turn = 2
+            subject = eight_f
+        elif ten_f.collidepoint(pos) and ten_f_color == "black":
+            ten_f_color = "blue"
+            turn = 2
+            subject = ten_f
+        elif twelve_f.collidepoint(pos) and twelve_f_color == "black":
+            twelve_f_color = "blue"
+            turn = 2
+            subject = twelve_f
+        elif fourteen_f.collidepoint(pos) and fourteen_f_color == "black":
+            fourteen_f_color = "blue"
+            turn = 2
+            subject = fourteen_f
+        elif sixteen_f.collidepoint(pos) and sixteen_f_color == "black":
+            sixteen_f_color = "blue"
+            turn = 2
+            subject = sixteen_f
+        elif three_g.collidepoint(pos) and three_g_color == "black":
+            three_g_color = "blue"
+            turn = 2
+            subject = three_g
+        elif five_g.collidepoint(pos) and five_g_color == "black":
+            five_g_color = "blue"
+            turn = 2
+            subject = five_g
+        elif seven_g.collidepoint(pos) and seven_g_color == "black":
+            seven_g_color = "blue"
+            turn = 2
+            subject = seven_g
+        elif nine_g.collidepoint(pos) and nine_g_color == "black":
+            nine_g_color = "blue"
+            turn = 2
+            subject = nine_g
+        elif eleven_g.collidepoint(pos) and eleven_g_color == "black":
+            eleven_g_color = "blue"
+            turn = 2
+            subject = eleven_g
+        elif thirteen_g.collidepoint(pos) and thirteen_g_color == "black":
+            thirteen_g_color = "blue"
+            turn = 2
+            subject = thirteen_g
+        elif fifteen_g.collidepoint(pos) and fifteen_g_color == "black":
+            fifteen_g_color = "blue"
+            turn = 2
+            subject = fifteen_g
+        elif four_h.collidepoint(pos) and four_h_color == "black":
+            four_h_color = "blue"
+            turn = 2
+            subject = four_h
+        elif six_h.collidepoint(pos) and six_h_color == "black":
+            six_h_color = "blue"
+            turn = 2
+            subject = six_h
+        elif eight_h.collidepoint(pos) and eight_h_color == "black":
+            eight_h_color = "blue"
+            turn = 2
+            subject = eight_h
+        elif ten_h.collidepoint(pos) and ten_h_color == "black":
+            ten_h_color = "blue"
+            turn = 2
+            subject = ten_h
+        elif twelve_h.collidepoint(pos) and twelve_h_color == "black":
+            twelve_h_color = "blue"
+            turn = 2
+            subject = twelve_h
+        elif fourteen_h.collidepoint(pos) and fourteen_h_color == "black":
+            fourteen_h_color = "blue"
+            turn = 2
+            subject = fourteen_h
+        elif five_i.collidepoint(pos) and five_i_color == "black":
+            five_i_color = "blue"
+            turn = 2
+            subject = five_i
+        elif seven_i.collidepoint(pos) and seven_i_color == "black":
+            seven_i_color = "blue"
+            turn = 2
+            subject = seven_i
+        elif nine_i.collidepoint(pos) and nine_i_color == "black":
+            nine_i_color = "blue"
+            turn = 2
+            subject = nine_i
+        elif eleven_i.collidepoint(pos) and eleven_i_color == "black":
+            eleven_i_color = "blue"
+            turn = 2
+            subject = eleven_i
+        elif thirteen_i.collidepoint(pos) and thirteen_i_color == "black":
+            thirteen_i_color = "blue"
+            turn = 2
+            subject = thirteen_i
+
+
+
+    if turn == 2:
+
+        if five_a.collidepoint(pos) and five_a_color == "black":
+            five_a_color = "red"
+            turn = 1
+            subject = five_a
+        elif seven_a.collidepoint(pos) and seven_a_color == "black":
+            seven_a_color = "red"
+            turn = 1
+            subject = seven_a
+        elif nine_a.collidepoint(pos) and nine_a_color == "black":
+            nine_a_color = "red"
+            turn = 1
+            subject = nine_a
+        elif eleven_a.collidepoint(pos) and eleven_a_color == "black":
+            eleven_a_color = "red"
+            turn = 1
+            subject = eleven_a
+        elif thirteen_a.collidepoint(pos) and thirteen_a_color == "black":
+            thirteen_a_color = "red"
+            turn = 1
+            subject = thirteen_a
+        elif four_b.collidepoint(pos) and four_b_color == "black":
+            four_b_color = "red"
+            turn = 1
+            subject = four_b
+        elif six_b.collidepoint(pos) and six_b_color == "black":
+            six_b_color = "red"
+            turn = 1
+            subject = six_b
+        elif eight_b.collidepoint(pos) and eight_b_color == "black":
+            eight_b_color = "red"
+            turn = 1
+            subject = eight_b
+        elif ten_b.collidepoint(pos) and ten_b_color == "black":
+            ten_b_color = "red"
+            turn = 1
+            subject = ten_b
+        elif twelve_b.collidepoint(pos) and twelve_b_color == "black":
+            twelve_b_color = "red"
+            turn = 1
+            subject = twelve_b
+        elif fourteen_b.collidepoint(pos) and fourteen_b_color == "black":
+            fourteen_b_color = "red"
+            turn = 1
+            subject = fourteen_b
+        elif three_c.collidepoint(pos) and three_c_color == "black":
+            three_c_color = "red"
+            turn = 1
+            subject = three_c
+        elif five_c.collidepoint(pos) and five_c_color == "black":
+            five_c_color = "red"
+            turn = 1
+            subject = five_c
+        elif seven_c.collidepoint(pos) and seven_c_color == "black":
+            seven_c_color = "red"
+            turn = 1
+            subject = seven_c
+        elif nine_c.collidepoint(pos) and nine_c_color == "black":
+            nine_c_color = "red"
+            turn = 1
+            subject = nine_c
+        elif eleven_c.collidepoint(pos) and eleven_c_color == "black":
+            eleven_c_color = "red"
+            turn = 1
+            subject = eleven_c
+        elif thirteen_c.collidepoint(pos) and thirteen_c_color == "black":
+            thirteen_c_color = "red"
+            turn = 1
+            subject = thirteen_c
+        elif fifteen_c.collidepoint(pos) and fifteen_c_color == "black":
+            fifteen_c_color = "red"
+            turn = 1
+            subject = fifteen_c
+        elif two_d.collidepoint(pos) and two_d_color == "black":
+            two_d_color = "red"
+            turn = 1
+            subject = two_d
+        elif four_d.collidepoint(pos) and four_d_color == "black":
+            four_d_color = "red"
+            turn = 1
+            subject = four_d
+        elif six_d.collidepoint(pos) and six_d_color == "black":
+            six_d_color = "red"
+            turn = 1
+            subject = six_d
+        elif eight_d.collidepoint(pos) and eight_d_color == "black":
+            eight_d_color = "red"
+            turn = 1
+            subject = eight_d
+        elif ten_d.collidepoint(pos) and ten_d_color == "black":
+            ten_d_color = "red"
+            turn = 1
+            subject = ten_d
+        elif twelve_d.collidepoint(pos) and twelve_d_color == "black":
+            twelve_d_color = "red"
+            turn = 1
+            subject = twelve_d
+        elif fourteen_d.collidepoint(pos) and fourteen_d_color == "black":
+            fourteen_d_color = "red"
+            turn = 1
+            subject = fourteen_d
+        elif sixteen_d.collidepoint(pos) and sixteen_d_color == "black":
+            sixteen_d_color = "red"
+            turn = 1
+            subject = sixteen_d
+        elif one_e.collidepoint(pos) and one_e_color == "black":
+            one_e_color = "red"
+            turn = 1
+            subject = one_e
+        elif three_e.collidepoint(pos) and three_e_color == "black":
+            three_e_color = "red"
+            turn = 1
+            subject = three_e
+        elif five_e.collidepoint(pos) and five_e_color == "black":
+            five_e_color = "red"
+            turn = 1
+            subject = five_e
+        elif seven_e.collidepoint(pos) and seven_e_color == "black":
+            seven_e_color = "red"
+            turn = 1
+            subject = seven_e
+        elif nine_e.collidepoint(pos) and nine_e_color == "black":
+            nine_e_color = "red"
+            turn = 1
+            subject = nine_e
+        elif eleven_e.collidepoint(pos) and eleven_e_color == "black":
+            eleven_e_color = "red"
+            turn = 1
+            subject = eleven_e
+        elif thirteen_e.collidepoint(pos) and thirteen_e_color == "black":
+            thirteen_e_color = "red"
+            turn = 1
+            subject = thirteen_e
+        elif fifteen_e.collidepoint(pos) and fifteen_e_color == "black":
+            fifteen_e_color = "red"
+            turn = 1
+            subject = fifteen_e
+        elif seventeen_e.collidepoint(pos) and seventeen_e_color == "black":
+            seventeen_e_color = "red"
+            turn = 1
+            subject = seventeen_e
+        elif two_f.collidepoint(pos) and two_f_color == "black":
+            two_f_color = "red"
+            turn = 1
+            subject = two_f
+        elif four_f.collidepoint(pos) and four_f_color == "black":
+            four_f_color = "red"
+            turn = 1
+            subject = four_f
+        elif six_f.collidepoint(pos) and six_f_color == "black":
+            six_f_color = "red"
+            turn = 1
+            subject = six_f
+        elif eight_f.collidepoint(pos) and eight_f_color == "black":
+            eight_f_color = "red"
+            turn = 1
+            subject = eight_f
+        elif ten_f.collidepoint(pos) and ten_f_color == "black":
+            ten_f_color = "red"
+            turn = 1
+            subject = ten_f
+        elif twelve_f.collidepoint(pos) and twelve_f_color == "black":
+            twelve_f_color = "red"
+            turn = 1
+            subject = twelve_f
+        elif fourteen_f.collidepoint(pos) and fourteen_f_color == "black":
+            fourteen_f_color = "red"
+            turn = 1
+            subject = fourteen_f
+        elif sixteen_f.collidepoint(pos) and sixteen_f_color == "black":
+            sixteen_f_color = "red"
+            turn = 1
+            subject = sixteen_f
+        elif three_g.collidepoint(pos) and three_g_color == "black":
+            three_g_color = "red"
+            turn = 1
+            subject = three_g
+        elif five_g.collidepoint(pos) and five_g_color == "black":
+            five_g_color = "red"
+            turn = 1
+            subject = five_g
+        elif seven_g.collidepoint(pos) and seven_g_color == "black":
+            seven_g_color = "red"
+            turn = 1
+            subject = seven_g
+        elif nine_g.collidepoint(pos) and nine_g_color == "black":
+            nine_g_color = "red"
+            turn = 1
+            subject = nine_g
+        elif eleven_g.collidepoint(pos) and eleven_g_color == "black":
+            eleven_g_color = "red"
+            turn = 1
+            subject = eleven_g
+        elif thirteen_g.collidepoint(pos) and thirteen_g_color == "black":
+            thirteen_g_color = "red"
+            turn = 1
+            subject = thirteen_g
+        elif fifteen_g.collidepoint(pos) and fifteen_g_color == "black":
+            fifteen_g_color = "red"
+            turn = 1
+            subject = fifteen_g
+        elif four_h.collidepoint(pos) and four_h_color == "black":
+            four_h_color = "red"
+            turn = 1
+            subject = four_h
+        elif six_h.collidepoint(pos) and six_h_color == "black":
+            six_h_color = "red"
+            turn = 1
+            subject = six_h
+        elif eight_h.collidepoint(pos) and eight_h_color == "black":
+            eight_h_color = "red"
+            turn = 1
+            subject = eight_h
+        elif ten_h.collidepoint(pos) and ten_h_color == "black":
+            ten_h_color = "red"
+            turn = 1
+            subject = ten_h
+        elif twelve_h.collidepoint(pos) and twelve_h_color == "black":
+            twelve_h_color = "red"
+            turn = 1
+            subject = twelve_h
+        elif fourteen_h.collidepoint(pos) and fourteen_h_color == "black":
+            fourteen_h_color = "red"
+            turn = 1
+            subject = fourteen_h
+        elif five_i.collidepoint(pos) and five_i_color == "black":
+            five_i_color = "red"
+            turn = 1
+            subject = five_i
+        elif seven_i.collidepoint(pos) and seven_i_color == "black":
+            seven_i_color = "red"
+            turn = 1
+            subject = seven_i
+        elif nine_i.collidepoint(pos) and nine_i_color == "black":
+            nine_i_color = "red"
+            turn = 1
+            subject = nine_i
+        elif eleven_i.collidepoint(pos) and eleven_i_color == "black":
+            eleven_i_color = "red"
+            turn = 1
+            subject = eleven_i
+        elif thirteen_i.collidepoint(pos) and thirteen_i_color == "black":
+            thirteen_i_color = "red"
+            turn = 1
+            subject = thirteen_i
+
+
+    if subject is not previous_subject:
+        subject_row = None
+        subject_number = None
+        for row in ROWS:
+            for number in NUMBER_WORDS:
+                variable_name = NUMBER_WORDS[number] + "_" + row
+                if variable_name in globals() and globals()[variable_name] is subject:
+                    subject_row = row
+                    subject_number = number
+
+        subject_variable_name = NUMBER_WORDS[subject_number] + "_" + subject_row
+        placed_color = globals()[subject_variable_name + "_color"]
+
+        if placed_color == "blue":
+            blue_turns_taken += 1
+            if blue_turns_taken > 1 and has_no_same_color_neighbor():
+                blue_roads += 1
+        elif placed_color == "red":
+            red_turns_taken += 1
+            if red_turns_taken > 1 and has_no_same_color_neighbor():
+                red_roads += 1
+
+
+
+def check_adj_color(row, number):
+
+    # check row and num of subject
+    # does above by checking all the valid variable names until same as subject
+    subject_row = None
+    subject_number = None
+    for row in ROWS:
+        for number in NUMBER_WORDS:
+            variable_name = NUMBER_WORDS[number] + "_" + row
+            if variable_name in globals() and globals()[variable_name] is subject:
+                subject_row = row
+                subject_number = number
+    if subject_row is None:
+        return {}
+    row_index = ROWS.index(subject_row)
+    # list all adj sq/hex and if subject is on row a/i, doesnt check above/below
+    possible_neighbors = [
+        (subject_row, subject_number - 2),
+        (subject_row, subject_number + 2),
+    ]
+    if row_index > 0:
+        row_above = ROWS[row_index - 1]
+        possible_neighbors.append((row_above, subject_number - 1))
+        possible_neighbors.append((row_above, subject_number + 1))
+    if row_index < len(ROWS) - 1:
+        row_below = ROWS[row_index + 1]
+        possible_neighbors.append((row_below, subject_number - 1))
+        possible_neighbors.append((row_below, subject_number + 1))
+    # for adj, checks if exists, and color
+    colors = {}
+    for neighbor_row, neighbor_number in possible_neighbors:
+        if neighbor_number not in NUMBER_WORDS:
+            continue
+        variable_name = NUMBER_WORDS[neighbor_number] + "_" + neighbor_row
+        if variable_name in globals():
+            color_variable_name = variable_name + "_color"
+            colors[(neighbor_row, neighbor_number)] = globals()[color_variable_name]
+    return colors
+
+
+
+
+
+
+
+
+def has_no_same_color_neighbor():
+    subject_row = None
+    subject_number = None
+    for row in ROWS:
+        for number in NUMBER_WORDS:
+            variable_name = NUMBER_WORDS[number] + "_" + row
+            if variable_name in globals() and globals()[variable_name] is subject:
+                subject_row = row
+                subject_number = number
+
+    if subject_row is None:
+        return True
+
+    subject_variable_name = NUMBER_WORDS[subject_number] + "_" + subject_row
+    subject_color = globals()[subject_variable_name + "_color"]
+
+    neighbor_colors = check_adj_color(subject_row, subject_number)
+
+    for neighbor_coord in neighbor_colors:
+        if neighbor_colors[neighbor_coord] == subject_color:
+            return False
+
+    return True
+
+
+
+def draw_connections():
+    for row in ROWS:
+        for number in NUMBER_WORDS:
+            variable_name = NUMBER_WORDS[number] + "_" + row
+            if variable_name not in globals():
+                continue
+
+            cell_color = globals()[variable_name + "_color"]
+            if cell_color == "black":
+                continue
+
+            cell_rect = globals()[variable_name]
+            row_index = ROWS.index(row)
+
+            forward_neighbors = [(row, number + 2)]
+
+            if row_index < len(ROWS) - 1:
+                row_below = ROWS[row_index + 1]
+                forward_neighbors.append((row_below, number - 1))
+                forward_neighbors.append((row_below, number + 1))
+
+            for neighbor_row, neighbor_number in forward_neighbors:
+                if neighbor_number not in NUMBER_WORDS:
+                    continue
+
+                neighbor_variable_name = NUMBER_WORDS[neighbor_number] + "_" + neighbor_row
+                if neighbor_variable_name not in globals():
+                    continue
+
+                neighbor_color = globals()[neighbor_variable_name + "_color"]
+                if neighbor_color != cell_color:
+                    continue
+
+                neighbor_rect = globals()[neighbor_variable_name]
+                screen.draw.line(cell_rect.center, neighbor_rect.center, cell_color)
+
+
+
+pgzrun.go()
